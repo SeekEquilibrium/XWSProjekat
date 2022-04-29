@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using User.Service.Models;
 using User.Service.DTO;
-using User.Service.Repositories;
-using User.Service.Repositories.Interface;
+using Common;
 
 namespace User.Service.Controllers
 {   
@@ -16,8 +15,8 @@ namespace User.Service.Controllers
     public class UserController : ControllerBase
     {
         public readonly IMapper _mapper;
-        private readonly IUserRepository _userRepository;
-        public UserController(IMapper mapper, IUserRepository userRepository){
+        private readonly IRepository<AppUser> _userRepository;
+        public UserController(IMapper mapper, IRepository<AppUser> userRepository){
             _mapper = mapper;
             _userRepository = userRepository;
         }

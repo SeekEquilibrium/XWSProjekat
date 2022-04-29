@@ -1,12 +1,6 @@
-using System.Net.NetworkInformation;
-using System.Reflection.Metadata;
+using Common.MongoDB;
+using Common.Settings;
 using User.Service.Models;
-using MongoDB.Bson.Serialization;
-using MongoDB.Bson.Serialization.Serializers;
-using User.Service.Settings;
-using MongoDB.Driver;
-using User.Service.Repositories.Interface;
-using User.Service.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 // builder.Services.Configure<AppUser>(
@@ -15,14 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 ServiceSettings serviceSettings = builder.Configuration.GetSection(nameof(ServiceSettings)).Get<ServiceSettings>();
 
-builder.Services.AddSingleton(serviceProvider =>
-{
-    var mongoDbSettings = builder.Configuration.GetSection(nameof(MongoDbSettings)).Get<MongoDbSettings>();
-    var mongoclient = new MongoClient(mongoDbSettings.ConnectionString);
-    return mongoclient.GetDatabase(serviceSettings.ServiceName);
-});
-
-builder.Services.AddSingleton<IUserRepository, UserRepository>();
+builder.Services.AddMongo()
+                .AddMongoRepository<AppUser>("users");
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

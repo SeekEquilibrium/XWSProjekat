@@ -1,4 +1,4 @@
-namespace User.Service.Settings
+namespace Common.Settings
 {
     public class MongoDbSettings
     {

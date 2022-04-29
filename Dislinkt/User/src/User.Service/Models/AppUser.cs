@@ -1,6 +1,8 @@
+using Common;
+
 namespace User.Service.Models
 {
-    public class AppUser
+    public class AppUser : IEntity
     {
         public Guid Id { get; set; }
         public String Firstname { get; set; }
@@ -24,7 +26,7 @@ namespace User.Service.Models
 
         }
 
-        public AppUser(){}
+        public AppUser() { }
 
     }
 }
