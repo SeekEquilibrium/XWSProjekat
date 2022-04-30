@@ -1,3 +1,7 @@
+using Common.MongoDB;
+using Post.Service.Clients;
+using Post.Service.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,6 +9,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddMongo()
+                .AddMongoRepository<UserPost>("posts");
+
+builder.Services.AddHttpClient<UserClient>(client =>
+            {
+                client.BaseAddress = new Uri("https://localhost:5001");
+            });
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
