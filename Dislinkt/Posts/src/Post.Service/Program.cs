@@ -8,9 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddMongo()
-                .AddMongoRepository<UserPost>("posts");
+                .AddMongoRepository<UserPost>("posts")
+                .AddAutoMapper();
 
 builder.Services.AddHttpClient<UserClient>(client =>
             {

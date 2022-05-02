@@ -1,15 +1,11 @@
 using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using User.Service.Models;
 using User.Service.DTO;
 using Common;
 
 namespace User.Service.Controllers
-{   
+{
     [ApiController]
     [Route("users")]
     public class UserController : ControllerBase

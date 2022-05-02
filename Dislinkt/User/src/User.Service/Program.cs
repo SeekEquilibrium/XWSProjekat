@@ -10,23 +10,18 @@ var builder = WebApplication.CreateBuilder(args);
 ServiceSettings serviceSettings = builder.Configuration.GetSection(nameof(ServiceSettings)).Get<ServiceSettings>();
 
 builder.Services.AddMongo()
-                .AddMongoRepository<AppUser>("users");
+                .AddMongoRepository<AppUser>("users")
+                .AddAutoMapper();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddControllers(options =>
             {
                 options.SuppressAsyncSuffixInActionNames = false;
             });
-
-// BsonSerializer.RegisterSerializer(new GuidSerializer(NetBiosNodeType.String));
-// builder.Services.AddMongo()
-//                     .AddMongoRepository<AppUser>("users")
-//                     .AddMassTransitWithRabbitMq();
 
 var app = builder.Build();
 
