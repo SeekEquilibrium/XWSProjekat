@@ -12,6 +12,9 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using User.Service.Service.Implements.Interfaces;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+
 namespace User.Service.Controllers
 {
     [ApiController]
@@ -20,20 +23,21 @@ namespace User.Service.Controllers
     {
         public readonly IMapper _mapper;
         private readonly IUserService _userService;
-        public AuthController(IMapper mapper, IUserService userService)
+        private readonly IAuthService _authService;
+        public AuthController(IMapper mapper, IUserService userService, IAuthService authService)
         {
             _mapper = mapper;
             _userService = userService;
+            _authService = authService;
         }
 
         [HttpPost("register")]
         public async Task<ActionResult<AppUser>> Register(RegisterRequestDTO request)
         {
-            AppUser userExists = await _userService.GetUserByUsername(request.Username);
-            if(userExists != null){
+            if(await _userService.GetUserByUsername(request.Username) != null){
                 return Conflict();
             }
-            CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
+            _authService.CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
             AppUser user = new AppUser(
                 request.Firstname,
@@ -47,13 +51,25 @@ namespace User.Service.Controllers
             return Ok(user);
         }
 
-        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        [HttpPost("login")]
+        public async Task<ActionResult<string>> Login(LoginRequest request)
         {
-            using (var hmac = new HMACSHA512())
-            {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            AppUser requestUser = await _userService.GetUserByUsername(request.Username);
+            if(requestUser == null){
+                return BadRequest("User not found.");
             }
+
+            if (!_authService.VerifyPasswordHash(request.Password, requestUser.PasswordHash, requestUser.PasswordSalt))
+            {
+                return BadRequest("Wrong password.");
+            }
+
+            string token = _authService.CreateToken(requestUser);
+
+            // var refreshToken = GenerateRefreshToken();
+            // SetRefreshToken(refreshToken);
+
+            return Ok(token);
         }
     }
 }

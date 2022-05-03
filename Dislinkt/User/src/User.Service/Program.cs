@@ -11,6 +11,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 ServiceSettings serviceSettings = builder.Configuration.GetSection(nameof(ServiceSettings)).Get<ServiceSettings>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+
 builder.Services.AddMongo()
                 .AddMongoRepository<AppUser>("users")
                 .AddAutoMapper();
