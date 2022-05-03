@@ -1,6 +1,8 @@
 using Common.MongoDB;
 using Common.Settings;
 using User.Service.Models;
+using User.Service.Service.Implements;
+using User.Service.Service.Implements.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 // builder.Services.Configure<AppUser>(
@@ -8,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 ServiceSettings serviceSettings = builder.Configuration.GetSection(nameof(ServiceSettings)).Get<ServiceSettings>();
-
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddMongo()
                 .AddMongoRepository<AppUser>("users")
                 .AddAutoMapper();
