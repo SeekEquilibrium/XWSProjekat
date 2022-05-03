@@ -1,6 +1,6 @@
 using User.Service.Models;
 
-namespace User.Service.Service.Implements.Interfaces
+namespace User.Service.Service.Interfaces
 {
     public interface IUserService
     {

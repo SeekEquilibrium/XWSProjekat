@@ -1,7 +1,7 @@
 using Common;
 using Microsoft.AspNetCore.Mvc;
 using User.Service.Models;
-using User.Service.Service.Implements.Interfaces;
+using User.Service.Service.Interfaces;
 
 namespace User.Service.Service.Implements
 {

@@ -5,7 +5,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using User.Service.Service.Implements.Interfaces;
+using User.Service.Service.Interfaces;
 
 namespace User.Service.Service.Implements
 {

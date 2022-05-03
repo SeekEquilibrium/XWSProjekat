@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 // using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using User.Service.Service.Implements.Interfaces;
+using User.Service.Service.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 

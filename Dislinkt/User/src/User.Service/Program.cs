@@ -2,7 +2,8 @@ using Common.MongoDB;
 using Common.Settings;
 using User.Service.Models;
 using User.Service.Service.Implements;
-using User.Service.Service.Implements.Interfaces;
+using User.Service.Service.Interfaces;
+
 
 var builder = WebApplication.CreateBuilder(args);
 // builder.Services.Configure<AppUser>(
