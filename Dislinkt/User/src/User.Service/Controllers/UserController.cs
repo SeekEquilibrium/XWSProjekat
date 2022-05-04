@@ -5,6 +5,7 @@ using User.Service.Models;
 using User.Service.DTO;
 using Common;
 using Microsoft.AspNetCore.Authorization;
+using User.Service.Service.Interfaces;
 
 namespace User.Service.Controllers
 {
@@ -13,16 +14,17 @@ namespace User.Service.Controllers
     public class UserController : ControllerBase
     {
         public readonly IMapper _mapper;
-        private readonly IRepository<AppUser> _userRepository;
-        public UserController(IMapper mapper, IRepository<AppUser> userRepository){
+        private readonly IUserService _userService;
+        public UserController(IMapper mapper, IUserService userService)
+        {
             _mapper = mapper;
-            _userRepository = userRepository;
+            _userService = userService;
         }
 
-        [HttpPost]
-        public async Task<ActionResult<IEnumerable<AppUser>>> PostAsync(UserDTO userDto){
+        [HttpPut]
+        public async Task<ActionResult<AppUser>> PostAsync(UserDTO userDto){
             var user = _mapper.Map<AppUser>(userDto);
-            await _userRepository.CreateAsync(user);
+            await _userService.UpdateUser(user);
 
             return Ok(user);
         }
@@ -31,7 +33,7 @@ namespace User.Service.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserDTO>>> GetAsync()
         {
-            var users = (await _userRepository.GetAllAsync())
+            var users = (await _userService.GetAll())
                         .Select(user => _mapper.Map<UserDTO>(user));
 
             return Ok(users);
@@ -41,7 +43,7 @@ namespace User.Service.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<UserDTO>> GetByIdAsync(Guid id)
         {
-            var user = await _userRepository.GetAsync(id);
+            var user = await _userService.GetUserById(id);
 
             if (user == null)
             {
