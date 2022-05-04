@@ -40,7 +40,7 @@ namespace User.Service.Service.Implements
             List<Claim> claims = new List<Claim>
             {
                 // Proveriti best practices
-                new Claim(JwtRegisteredClaimNames.Sub, user.Username),
+                new Claim(ClaimTypes.Name, user.Username),
                 // new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
                 // new Claim(ClaimTypes.Role, "Admin")
             };

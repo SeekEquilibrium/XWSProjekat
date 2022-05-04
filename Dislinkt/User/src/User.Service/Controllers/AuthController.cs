@@ -43,6 +43,7 @@ namespace User.Service.Controllers
                 request.Firstname,
                 request.Surname,
                 request.Username,
+                request.IsPrivate,
                 passwordHash,
                 passwordSalt
             );

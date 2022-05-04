@@ -6,5 +6,6 @@ namespace User.Service.DTO
         public String Surname { get; set; }
         public String Username { get; set; }
         public String Password { get; set; }
+        public Boolean IsPrivate { get; set; } = true;
     }
 }

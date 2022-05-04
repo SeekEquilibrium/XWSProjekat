@@ -1,8 +1,10 @@
+using System.Security.Claims;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using User.Service.Models;
 using User.Service.DTO;
 using Common;
+using Microsoft.AspNetCore.Authorization;
 
 namespace User.Service.Controllers
 {
