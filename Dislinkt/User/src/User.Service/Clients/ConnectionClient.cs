@@ -1,6 +1,10 @@
 using User.Service.Models;
 using Common;
 using System.Net.Http;
+using System.Text;
+using Newtonsoft.Json;
+using User.Service.DTO;
+using Microsoft.AspNetCore.Mvc;
 
 namespace User.Service.Clients
 {
@@ -13,16 +17,18 @@ namespace User.Service.Clients
             this.httpClient = httpClient;
         }
 
-        public async Task PostUserAsync(Guid UserId)
+        public async Task PostUserAsync(Guid id)
         {
-            await httpClient.PostAsync($"/users",new StringContent(UserId.ToString()));
+            ClientDTO user = new ClientDTO(id);
+
+            await httpClient.PostAsJsonAsync<ClientDTO>($"/Users", user);
                 
         }
 
-        /*
-            Pogadjamo endpoint od UsersController-a
-            Definisemo putanju klijenta u Program.cs
-        */
+        public async Task ConnectAsync(Guid sender, Guid reciever)
+        {
+            await httpClient.GetFromJsonAsync<IActionResult>($"/Users/{sender}/connect/{reciever}");
+        }
         
     }
 }

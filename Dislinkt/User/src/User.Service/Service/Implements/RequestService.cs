@@ -1,5 +1,6 @@
 using Common;
 using Microsoft.AspNetCore.Mvc;
+using User.Service.Clients;
 using User.Service.Models;
 using User.Service.Service.Interfaces;
 
@@ -9,9 +10,12 @@ namespace User.Service.Service.Implements
     {
         private readonly IRepository<Request> _requestRepository;
 
-        public RequestSevice(IRepository<Request> requestRepository)
+        private readonly ConnectionClient _connectclient;
+
+        public RequestSevice(IRepository<Request> requestRepository, ConnectionClient connectclient)
         {
             _requestRepository = requestRepository;
+            _connectclient = connectclient;
         }
 
         public async Task CreateRequest(Guid sender, Guid reciever){
@@ -32,7 +36,7 @@ namespace User.Service.Service.Implements
         {
             Request request = await GetRequest(sender, reciever);
             if(request != null){
-                //poslati connection servisu
+                await _connectclient.ConnectAsync(sender, reciever);
             }
             return request;
         }
