@@ -21,11 +21,25 @@ namespace User.Service.Controllers
             _userService = userService;
         }
 
-        [HttpPut]
-        public async Task<ActionResult<AppUser>> PostAsync(UserDTO userDto){
-            var user = _mapper.Map<AppUser>(userDto);
-            await _userService.UpdateUser(user);
+        [HttpPut, Authorize]
+        public async Task<ActionResult<AppUser>> PutAsync(UserEditDTO userDto){
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            AppUser currentUser = await _userService.GetUserById(new Guid(currentUserId));
+            AppUser targetedUser = await _userService.GetUserByUsername(userDto.Username);
+            
+            // Ako targetedUser != null, postoji user sa tim username
+            // Da li taj username pripada useru koji zeli da edituje
+            if(targetedUser != null){
+                if(targetedUser.Id != currentUser.Id){
+                    return BadRequest("User with that USERNAME already exists.");
+                }
 
+            }
+            var user = _mapper.Map<AppUser>(userDto);
+            user.Id = currentUser.Id;
+            user.PasswordHash = currentUser.PasswordHash;
+            user.PasswordSalt = currentUser.PasswordSalt;
+            await _userService.UpdateUser(user);
             return Ok(user);
         }
     

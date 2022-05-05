@@ -23,7 +23,6 @@ namespace User.Service.Service.Implements
             AppUser appUser = await _userRepository.GetAsync(user => user.Id.Equals(id));
             return appUser;
         }
-
         public async Task<AppUser> GetUserByUsername(string username)
         {
             AppUser appUser = await _userRepository.GetAsync(user => user.Username.Equals(username));
