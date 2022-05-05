@@ -7,6 +7,11 @@ namespace User.Service.Models
         public Guid Id { get; set; }
         public String Firstname { get; set; }
         public String Surname { get; set; }
+        public String Email {get; set;}
+        public String Telephone { get; set; }
+        public GenderEnum Gender {get; set;}
+        public DateTime BirthDate {get; set;}
+        public String Biography { get; set; }
         public String Username { get; set; }
         public Boolean IsPrivate { get; set; } = true;
         public byte[] PasswordHash { get; set; }
@@ -21,6 +26,8 @@ namespace User.Service.Models
             this.PasswordHash = passwordHash;
             this.PasswordSalt = passwordSalt;
         }
+
+        
 
         public AppUser(Guid id, String firstname, String surname, String username)
         {
