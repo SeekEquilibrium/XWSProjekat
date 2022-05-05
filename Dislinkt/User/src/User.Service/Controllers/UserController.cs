@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using User.Service.Models;
 using User.Service.DTO;
 using Common;
+using User.Service.Clients;
 
 namespace User.Service.Controllers
 {
@@ -12,15 +13,19 @@ namespace User.Service.Controllers
     {
         public readonly IMapper _mapper;
         private readonly IRepository<AppUser> _userRepository;
-        public UserController(IMapper mapper, IRepository<AppUser> userRepository){
+        private readonly ConnectionClient _connectclient;
+        public UserController(IMapper mapper, IRepository<AppUser> userRepository, ConnectionClient client){
             _mapper = mapper;
             _userRepository = userRepository;
+            _connectclient = client;
         }
 
         [HttpPost]
         public async Task<ActionResult<IEnumerable<AppUser>>> PostAsync(UserDTO userDto){
             var user = _mapper.Map<AppUser>(userDto);
             await _userRepository.CreateAsync(user);
+            await _connectclient.PostUserAsync(user.Id);
+
 
             return Ok(user);
         }
