@@ -9,5 +9,6 @@ namespace User.Service.Service.Interfaces
         Task<AppUser> GetUserByUsername(string username);
         Task CreateUser(AppUser user);
         Task UpdateUser(AppUser user);
+        Task<IEnumerable<AppUser>> SearchUsers(string firstname, string surname, string username);
     }
 }

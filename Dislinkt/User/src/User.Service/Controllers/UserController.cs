@@ -40,6 +40,18 @@ namespace User.Service.Controllers
         }
 
 
+        [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<UserDTO>>> GetAsync(string? firstname, string? surname, string? username)
+        {
+            if(firstname == null) firstname = string.Empty;
+            if(surname == null) surname = string.Empty;
+            if(username == null) username = string.Empty;
+
+            var users = (await _userService.SearchUsers(firstname, surname, username))
+                        .Select(user => _mapper.Map<UserDTO>(user));
+            return Ok(users);
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<UserDTO>> GetByIdAsync(Guid id)
         {

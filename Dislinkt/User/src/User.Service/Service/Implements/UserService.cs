@@ -37,5 +37,12 @@ namespace User.Service.Service.Implements
         public async Task UpdateUser(AppUser user){
             await _userRepository.UpdateAsync(user);
         }
+        
+        public async Task<IEnumerable<AppUser>> SearchUsers(string firstname, string surname, string username){
+            var users = await _userRepository.GetAllAsync(user => ((user.Firstname.ToLower().Contains(firstname.ToLower()) && firstname!=string.Empty) ||
+                                                        (user.Surname.ToLower().Contains(surname.ToLower()) && surname!=string.Empty) ||
+                                                        (user.Username.ToLower().Contains(username.ToLower())&& username!=string.Empty)) && !user.IsPrivate);
+            return users;
+        }
     }
 }
