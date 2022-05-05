@@ -1,4 +1,20 @@
 using Common.MongoDB;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
+using Common.Settings;
+using Neo4jClient;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +24,14 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+
+var client = new BoltGraphClient(new Uri("bolt://localhost:7687"),"neo4j", "root");
+            client.ConnectAsync();
+            builder.Services.AddSingleton<IGraphClient>(client);
+        
+ 
 
 // builder.Services.AddMongo()
 //                 .AddMongoRepository<AppUser>("users")
