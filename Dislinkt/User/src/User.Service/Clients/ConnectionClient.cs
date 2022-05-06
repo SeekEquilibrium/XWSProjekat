@@ -4,7 +4,8 @@ using System.Net.Http;
 using System.Text;
 using Newtonsoft.Json;
 using User.Service.DTO;
-using Microsoft.AspNetCore.Mvc;
+
+
 
 namespace User.Service.Clients
 {
@@ -27,8 +28,12 @@ namespace User.Service.Clients
 
         public async Task ConnectAsync(Guid sender, Guid reciever)
         {
-            await httpClient.GetFromJsonAsync<IActionResult>($"/Users/{sender}/connect/{reciever}");
+
+            object value = await httpClient.GetAsync($"/Users/{sender}/connect/{reciever}");
+            
         }
+
+
         
     }
 }

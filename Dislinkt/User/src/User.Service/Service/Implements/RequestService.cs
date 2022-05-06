@@ -32,13 +32,13 @@ namespace User.Service.Service.Implements
             return requests;            
         }
 
-        public async Task<Request> Confirm(Guid sender, Guid reciever)
+        public async Task Confirm(Guid sender, Guid reciever)
         {
             Request request = await GetRequest(sender, reciever);
             if(request != null){
                 await _connectclient.ConnectAsync(sender, reciever);
             }
-            return request;
+            
         }
 
         private async Task<Request> GetRequest(Guid sender, Guid reciever)

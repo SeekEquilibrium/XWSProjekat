@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Common" Version="1.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.4" />
     <PackageReference Include="Neo4j.Driver" Version="4.4.0" />
     <PackageReference Include="Neo4j.Driver.Extensions" Version="1.0.14" />
     <PackageReference Include="Neo4j.Driver.Signed" Version="4.4.0" />

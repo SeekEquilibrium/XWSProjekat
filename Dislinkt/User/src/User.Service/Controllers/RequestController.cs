@@ -49,10 +49,10 @@ namespace User.Service.Controllers
 
 
         [HttpPost("confirm")]
-        public async Task<ActionResult<IEnumerable<Request>>> ConfirmRequest(RequestDTO requestDTO)
+        public async Task<ActionResult> ConfirmRequest(RequestDTO requestDTO)
         {
-            var request = await _requestService.Confirm(requestDTO.Sender, requestDTO.Reciever);
-            return Ok(request);
+            await _requestService.Confirm(requestDTO.Sender,requestDTO.Reciever);
+            return Ok();
         }
     }
 }

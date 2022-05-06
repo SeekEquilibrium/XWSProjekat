@@ -9,7 +9,7 @@ namespace User.Service.Service.Interfaces
 
         Task<IReadOnlyCollection<Request>> GetRequestsForUser(Guid reciever);
 
-        Task<Request> Confirm(Guid sender, Guid reciever);
+        Task Confirm(Guid sender, Guid reciever);
 
     }
 }
