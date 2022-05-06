@@ -12,13 +12,18 @@ namespace Post.Service.Controllers
     {
         private readonly IRepository<UserPost> _postRepository;
         private readonly UserClient _userClient;
-        public PostsController(IRepository<UserPost> postRepository, UserClient userClient){
+
+        private readonly ConnectionClient _connectionClient;
+        public PostsController(IRepository<UserPost> postRepository, UserClient userClient, ConnectionClient connectionClient)
+        {
             this._postRepository = postRepository;
             this._userClient = userClient;
+            this._connectionClient = connectionClient;
         }
 
         [HttpGet]
-        public async Task<ActionResult<PostDTO>> GetAsync(Guid postId){
+        public async Task<ActionResult<PostDTO>> GetAsync(Guid postId)
+        {
             if(postId == Guid.Empty)
             {
                 return BadRequest();
@@ -35,13 +40,39 @@ namespace Post.Service.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<IEnumerable<UserPost>>> PostAsync(UserPost userPost){
-            if(userPost.Text == null){
+        public async Task<ActionResult<IEnumerable<UserPost>>> PostAsync(UserPost userPost)
+        {
+            if(userPost.Text == null)
+            {
                 return BadRequest();
             }
 
             await _postRepository.CreateAsync(userPost);
             return Ok();
+        }
+
+        [HttpGet("feed")]
+        public async Task<ActionResult<IEnumerable<UserPost>>> GetFeedAsync(Guid userId)
+        {
+            var users = await _connectionClient.GetConnectedAsync(userId);
+            IEnumerable<UserPost> feed = Enumerable.Empty<UserPost>();
+
+            foreach(Guid user in users)
+            {
+                feed.Concat<UserPost>(await _postRepository.GetAllAsync(post => post.UserId.Equals(user)));
+            }
+
+            return Ok(feed);
+        }
+
+        [HttpGet("userPosts")]
+        public async Task<ActionResult<IEnumerable<UserPost>>> GetByUserAsync(Guid userId)
+        {
+            if(userId == Guid.Empty) return BadRequest();
+
+            var posts = await _postRepository.GetAllAsync(post => post.UserId.Equals(userId));
+
+            return Ok(posts);
         }
     }
 }

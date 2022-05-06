@@ -17,6 +17,11 @@ builder.Services.AddHttpClient<UserClient>(client =>
                 client.BaseAddress = new Uri("https://localhost:5001");
             });
 
+builder.Services.AddHttpClient<ConnectionClient>(client =>
+            {
+                client.BaseAddress = new Uri("https://localhost:5007");
+            });
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
