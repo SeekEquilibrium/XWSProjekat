@@ -52,21 +52,21 @@ namespace Post.Service.Controllers
         }
 
         [HttpGet("feed")]
-        public async Task<ActionResult<IEnumerable<UserPost>>> GetFeedAsync(Guid userId)
+        public async Task<ActionResult<IEnumerable<UserPost>>> GetFeedAsync(Guid userId)      //id iz tokena
         {
             var users = await _connectionClient.GetConnectedAsync(userId);
             IEnumerable<UserPost> feed = Enumerable.Empty<UserPost>();
 
-            foreach(Guid user in users)
+            foreach(ConnectionDTO user in users)
             {
-                feed.Concat<UserPost>(await _postRepository.GetAllAsync(post => post.UserId.Equals(user)));
+                feed = feed.Concat<UserPost>(await _postRepository.GetAllAsync(post => post.UserId.Equals(user.Id)));
             }
 
             return Ok(feed);
         }
 
         [HttpGet("userPosts")]
-        public async Task<ActionResult<IEnumerable<UserPost>>> GetByUserAsync(Guid userId)
+        public async Task<ActionResult<IEnumerable<UserPost>>> GetByUserAsync(Guid userId)        //porvere pracenje i private user
         {
             if(userId == Guid.Empty) return BadRequest();
 

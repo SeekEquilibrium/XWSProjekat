@@ -70,14 +70,6 @@ namespace UsersController
             return Ok();
         }
 
-        /*
-            MATCH (u:User)-[:VISITS]->(c1:Country), (u)-[:VISITS]->(c2:Country)
-            WHERE c1.name = "France"
-            AND c2.name = "Spain"
-            RETURN u.name
-        */
-
-
         [HttpGet("/followers/{id}")]
         public async Task<List<User>> GetFollowers(Guid id)
         {

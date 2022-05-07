@@ -12,8 +12,8 @@ namespace Post.Service.Clients
             this.httpClient = httpClient;
         }
 
-        public async Task<IEnumerable<Guid>> GetConnectedAsync(Guid userId){     //TO DO: napraviti DTO
-            var users = await httpClient.GetFromJsonAsync<IEnumerable<Guid>>($"/Users/followers/{userId}");   //proveriti endpoint
+        public async Task<IEnumerable<ConnectionDTO>> GetConnectedAsync(Guid userId){
+            var users = await httpClient.GetFromJsonAsync<IEnumerable<ConnectionDTO>>($"/followers/{userId}");   //proveriti endpoint
             return users;
         }
     }
