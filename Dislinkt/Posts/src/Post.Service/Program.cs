@@ -12,6 +12,9 @@ builder.Services.AddMongo()
                 .AddMongoRepository<UserPost>("posts")
                 .AddAutoMapper();
 
+builder.Services.AddMongoRepository<PostInteractions>("postInteractions")
+                .AddAutoMapper();
+
 builder.Services.AddHttpClient<UserClient>(client =>
             {
                 client.BaseAddress = new Uri("https://localhost:5001");

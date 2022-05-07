@@ -11,12 +11,16 @@ namespace Post.Service.Controllers
     public class PostsController : ControllerBase
     {
         private readonly IRepository<UserPost> _postRepository;
+
+        private readonly IRepository<PostInteractions> _interactionRepository;
+
         private readonly UserClient _userClient;
 
         private readonly ConnectionClient _connectionClient;
-        public PostsController(IRepository<UserPost> postRepository, UserClient userClient, ConnectionClient connectionClient)
+        public PostsController(IRepository<UserPost> postRepository, IRepository<PostInteractions> interactionRepository, UserClient userClient, ConnectionClient connectionClient)
         {
             this._postRepository = postRepository;
+            this._interactionRepository = interactionRepository;
             this._userClient = userClient;
             this._connectionClient = connectionClient;
         }
@@ -24,11 +28,10 @@ namespace Post.Service.Controllers
         [HttpGet]
         public async Task<ActionResult<PostDTO>> GetAsync(Guid postId)
         {
-            if(postId == Guid.Empty)
-            {
-                return BadRequest();
-            }
+            if(postId == Guid.Empty) return BadRequest();
+            
             var post = await _postRepository.GetAsync(postId);
+
             if(post == null) return BadRequest();
              
             UserDTO userDto = await _userClient.GetUserAsync(post.UserId);
@@ -36,18 +39,19 @@ namespace Post.Service.Controllers
                 post.Id, post.Text, post.PostDate,
                 userDto.Id, userDto.Firstname, userDto.Surname, userDto.Username
             );
+
             return Ok(postDto);
         }
 
         [HttpPost]
         public async Task<ActionResult<IEnumerable<UserPost>>> PostAsync(UserPost userPost)
         {
-            if(userPost.Text == null)
-            {
-                return BadRequest();
-            }
+            if(userPost.Text == null) return BadRequest();
+
+            PostInteractions postInteractions = new PostInteractions(userPost.Id, Enumerable.Empty<Guid>(), Enumerable.Empty<Guid>(), Enumerable.Empty<Comment>());
 
             await _postRepository.CreateAsync(userPost);
+            await _interactionRepository.CreateAsync(postInteractions);
             return Ok();
         }
 
@@ -66,7 +70,7 @@ namespace Post.Service.Controllers
         }
 
         [HttpGet("userPosts")]
-        public async Task<ActionResult<IEnumerable<UserPost>>> GetByUserAsync(Guid userId)        //porvere pracenje i private user
+        public async Task<ActionResult<IEnumerable<UserPost>>> GetByUserAsync(Guid userId)        //provere pracenje i private user
         {
             if(userId == Guid.Empty) return BadRequest();
 
@@ -74,5 +78,37 @@ namespace Post.Service.Controllers
 
             return Ok(posts);
         }
+
+        [HttpPost("likePost")]
+        public async Task<ActionResult<IEnumerable<UserPost>>> LikePostAsync(InteractionDTO interactionDTO)
+        {
+            var postInteraction = await _interactionRepository.GetAsync(interactionDTO.PostId);   //TO DO: dodati provere jel vec like/dislike
+            postInteraction.Likes = postInteraction.Likes.Append<Guid>(interactionDTO.UserId);
+            await _interactionRepository.UpdateAsync(postInteraction);
+
+            return Ok();
+        }
+
+        [HttpPost("dislikePost")]
+        public async Task<ActionResult<IEnumerable<UserPost>>> DislikePostAsync(InteractionDTO interactionDTO)
+        {
+            var postInteraction = await _interactionRepository.GetAsync(interactionDTO.PostId);      //TO DO: dodati provere jel vec like/dislike
+            postInteraction.Dislikes = postInteraction.Dislikes.Append<Guid>(interactionDTO.UserId);
+            await _interactionRepository.UpdateAsync(postInteraction);
+            
+            return Ok();
+        }
+
+        [HttpPost("comment")]
+        public async Task<ActionResult<IEnumerable<UserPost>>> CommentAsync(CommentDTO commentDTO)
+        {
+            var postInteraction = await _interactionRepository.GetAsync(commentDTO.PostId);
+            Comment comment = new Comment(commentDTO.UserId, commentDTO.Text, DateTimeOffset.Now);
+            postInteraction.Comments = postInteraction.Comments.Append<Comment>(comment);
+            await _interactionRepository.UpdateAsync(postInteraction);
+
+            return Ok();
+        }
+
     }
 }

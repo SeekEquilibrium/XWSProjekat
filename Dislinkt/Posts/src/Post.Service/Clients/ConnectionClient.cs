@@ -13,7 +13,7 @@ namespace Post.Service.Clients
         }
 
         public async Task<IEnumerable<ConnectionDTO>> GetConnectedAsync(Guid userId){
-            var users = await httpClient.GetFromJsonAsync<IEnumerable<ConnectionDTO>>($"/followers/{userId}");   //proveriti endpoint
+            var users = await httpClient.GetFromJsonAsync<IEnumerable<ConnectionDTO>>($"/followers/{userId}");
             return users;
         }
     }
