@@ -42,7 +42,14 @@ namespace User.Service.Controllers
             AppUser user = new AppUser(
                 request.Firstname,
                 request.Surname,
+                request.Email,
+                request.Telephone,
+                request.Gender,
+                request.BirthDate,
+                request.Biography,
                 request.Username,
+                request.Interest,
+                request.Skills,
                 request.IsPrivate,
                 passwordHash,
                 passwordSalt
