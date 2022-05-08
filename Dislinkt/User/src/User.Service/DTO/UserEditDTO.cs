@@ -2,7 +2,7 @@ using User.Service.Models;
 
 namespace User.Service.DTO
 {
-    public class RegisterRequestDTO
+    public class UserEditDTO
     {
         public String Firstname { get; set; }
         public String Surname { get; set; }
@@ -14,10 +14,8 @@ namespace User.Service.DTO
         public String Username { get; set; }
         public String Interest {get;set;}
         public List<SkillsEnum> Skills {get; set;}
-        public String Password { get; set; }
-        public Boolean IsPrivate { get; set; } = true;
-
-        public RegisterRequestDTO(String firstname, String surname, String email, String telephone, GenderEnum gender, DateTime birthDate, String biography, String username, String interest, List<SkillsEnum> skills, Boolean isPrivate, String password)
+        public Boolean IsPrivate { get; set; }
+        public UserEditDTO(String firstname, String surname, String email, String telephone, GenderEnum gender, DateTime birthDate, String biography, String username, String interest, List<SkillsEnum> skills, Boolean isPrivate)
         {
             this.Firstname = firstname;
             this.Surname = surname;
@@ -30,8 +28,6 @@ namespace User.Service.DTO
             this.Interest = interest;
             this.Skills = skills;
             this.IsPrivate = isPrivate;
-            this.Password = password;
         }
-
     }
 }
