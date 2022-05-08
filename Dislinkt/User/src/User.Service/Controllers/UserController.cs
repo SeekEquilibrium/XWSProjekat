@@ -19,7 +19,7 @@ namespace User.Service.Controllers
         private readonly ConnectionClient _connectclient;
         private readonly IUserService _userService;
 
-        
+
         public UserController(IMapper mapper, IRepository<AppUser> userRepository, ConnectionClient client,  IUserService userService){
             _mapper = mapper;
             _userRepository = userRepository;
@@ -32,7 +32,7 @@ namespace User.Service.Controllers
             var user = _mapper.Map<AppUser>(userDto);
             await _userRepository.CreateAsync(user);
             await _connectclient.PostUserAsync(user.Id);
-
+            return Ok(user);
         }
 
         [HttpPut, Authorize]

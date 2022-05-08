@@ -14,6 +14,7 @@ using System.Security.Cryptography;
 using User.Service.Service.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using User.Service.Clients;
 
 namespace User.Service.Controllers
 {
@@ -24,11 +25,14 @@ namespace User.Service.Controllers
         public readonly IMapper _mapper;
         private readonly IUserService _userService;
         private readonly IAuthService _authService;
-        public AuthController(IMapper mapper, IUserService userService, IAuthService authService)
+        private readonly ConnectionClient _connectclient;
+
+        public AuthController(IMapper mapper, IUserService userService, IAuthService authService, ConnectionClient client)
         {
             _mapper = mapper;
             _userService = userService;
             _authService = authService;
+            _connectclient = client;
         }
 
         [HttpPost("register")]
@@ -56,6 +60,7 @@ namespace User.Service.Controllers
             );
 
             await _userService.CreateUser(user);
+            await _connectclient.PostUserAsync(user.Id);
             return Ok(user);
         }
 
