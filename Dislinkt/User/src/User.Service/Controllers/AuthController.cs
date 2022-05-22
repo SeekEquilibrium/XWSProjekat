@@ -38,7 +38,13 @@ namespace User.Service.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<AppUser>> Register(RegisterRequestDTO request)
         {
-            if(await _userService.GetUserByUsername(request.Username) != null){
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            if (await _userService.GetUserByUsername(request.Username) != null)
+            {
                 return Conflict();
             }
             _authService.CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
@@ -60,7 +66,7 @@ namespace User.Service.Controllers
             );
 
             await _userService.CreateUser(user);
-            await _connectclient.PostUserAsync(user.Id);
+            // await _connectclient.PostUserAsync(user.Id);
             return Ok(user);
         }
 
@@ -68,7 +74,8 @@ namespace User.Service.Controllers
         public async Task<ActionResult<string>> Login(LoginRequest request)
         {
             AppUser requestUser = await _userService.GetUserByUsername(request.Username);
-            if(requestUser == null){
+            if (requestUser == null)
+            {
                 return BadRequest("User not found.");
             }
 

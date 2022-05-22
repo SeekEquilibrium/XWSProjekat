@@ -18,17 +18,21 @@ namespace User.Service.Controllers
         private readonly IRepository<AppUser> _userRepository;
         private readonly ConnectionClient _connectclient;
         private readonly IUserService _userService;
+        private readonly IAuthService _authService;
 
-
-        public UserController(IMapper mapper, IRepository<AppUser> userRepository, ConnectionClient client,  IUserService userService){
+        public UserController(IMapper mapper, IRepository<AppUser> userRepository, ConnectionClient client,
+        IUserService userService, IAuthService authService)
+        {
             _mapper = mapper;
             _userRepository = userRepository;
             _connectclient = client;
             _userService = userService;
+            _authService = authService;
         }
 
         [HttpPost]
-        public async Task<ActionResult<IEnumerable<AppUser>>> PostAsync(UserDTO userDto){
+        public async Task<ActionResult<IEnumerable<AppUser>>> PostAsync(UserDTO userDto)
+        {
             var user = _mapper.Map<AppUser>(userDto);
             await _userRepository.CreateAsync(user);
             await _connectclient.PostUserAsync(user.Id);
@@ -36,15 +40,18 @@ namespace User.Service.Controllers
         }
 
         [HttpPut, Authorize]
-        public async Task<ActionResult<AppUser>> PutAsync(UserEditDTO userDto){
+        public async Task<ActionResult<AppUser>> PutAsync(UserEditDTO userDto)
+        {
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             AppUser currentUser = await _userService.GetUserById(new Guid(currentUserId));
             AppUser targetedUser = await _userService.GetUserByUsername(userDto.Username);
-            
+
             // Ako targetedUser != null, postoji user sa tim username
             // Da li taj username pripada useru koji zeli da edituje
-            if(targetedUser != null){
-                if(targetedUser.Id != currentUser.Id){
+            if (targetedUser != null)
+            {
+                if (targetedUser.Id != currentUser.Id)
+                {
                     return BadRequest("User with that USERNAME already exists.");
                 }
 
@@ -56,7 +63,36 @@ namespace User.Service.Controllers
             await _userService.UpdateUser(user);
             return Ok(user);
         }
-    
+
+        [HttpPut("ChangePassword"), Authorize]
+        public async Task<ActionResult<AppUser>> ChangePassword(ChangePasswordDTO changePasswordDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            AppUser currentUser = await _userService.GetUserById(new Guid(currentUserId));
+
+            if (!_authService.VerifyPasswordHash(changePasswordDTO.OldPassword,
+                                                currentUser.PasswordHash,
+                                                currentUser.PasswordSalt))
+            {
+                return BadRequest("Wrong Password!");
+            }
+
+            _authService.CreatePasswordHash(changePasswordDTO.NewPassword, out byte[] passwordHash, out byte[] passwordSalt);
+
+
+
+            currentUser.PasswordHash = passwordHash;
+            currentUser.PasswordSalt = passwordSalt;
+
+            await _userService.UpdateUser(currentUser);
+            return Ok(currentUser);
+        }
+
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserDTO>>> GetAsync()
@@ -71,9 +107,9 @@ namespace User.Service.Controllers
         [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<UserDTO>>> GetAsync(string? firstname, string? surname, string? username)
         {
-            if(firstname == null) firstname = string.Empty;
-            if(surname == null) surname = string.Empty;
-            if(username == null) username = string.Empty;
+            if (firstname == null) firstname = string.Empty;
+            if (surname == null) surname = string.Empty;
+            if (username == null) username = string.Empty;
 
             var users = (await _userService.SearchUsers(firstname, surname, username))
                         .Select(user => _mapper.Map<UserDTO>(user));
