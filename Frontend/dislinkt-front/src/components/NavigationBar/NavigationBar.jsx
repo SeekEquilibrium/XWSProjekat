@@ -16,7 +16,7 @@ export const NavigationBar = () => {
     const [searchClicked, setSearchClicked] = useState(false);
     const [firstname, setFirstname] = useState("");
     const [surname, setSurname] = useState("");
-    const [nickname, setNickname] = useState("");
+    const [username, setUsername] = useState("");
     const [showWarning, setShowWarning] = useState(false);
 
     const toggleShowWarning = () => setShowWarning(!showWarning);
@@ -28,7 +28,8 @@ export const NavigationBar = () => {
     }, [showWarning]);
 
     const onSearch = (event) => {
-        if (!firstname && !surname && !nickname) {
+        event.preventDefault();
+        if (!firstname && !surname && !username) {
             setShowWarning(true);
             return;
         }
@@ -40,7 +41,7 @@ export const NavigationBar = () => {
             <Navbar bg="light" expand="lg">
                 <Container>
                     <Navbar.Brand href="#home">Dislinkt</Navbar.Brand>
-                    <Form className="flex-row-center">
+                    <Form className="flex-row-center" onSubmit={onSearch}>
                         <FormControl
                             type="search"
                             placeholder="Firstname"
@@ -59,17 +60,13 @@ export const NavigationBar = () => {
                         />
                         <FormControl
                             type="search"
-                            placeholder="Nickname"
+                            placeholder="Username"
                             className="me-2 searchbar"
                             aria-label="Search"
-                            value={nickname}
-                            onChange={(e) => setNickname(e.target.value)}
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
                         />
-                        <Button
-                            onClick={() => onSearch()}
-                            variant="outline-success"
-                            type="submit"
-                        >
+                        <Button variant="outline-success" type="submit">
                             Search
                         </Button>
                         <ToastContainer position="top-center">
@@ -107,7 +104,11 @@ export const NavigationBar = () => {
                     <Modal.Title>Select User</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <SearchedUsers />
+                    <SearchedUsers
+                        firstname={firstname}
+                        surname={surname}
+                        username={username}
+                    />
                 </Modal.Body>
             </Modal>
         </>

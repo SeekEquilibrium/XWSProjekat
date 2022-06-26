@@ -11,10 +11,10 @@ export const fetchSearchedUsersRequest = () => {
     };
 };
 
-export const fetchSearchedUsersSuccess = (comments) => {
+export const fetchSearchedUsersSuccess = (users) => {
     return {
         type: FETCH_SEARCHED_USERS_SUCCESS,
-        payload: comments,
+        payload: users,
     };
 };
 
@@ -25,21 +25,19 @@ export const fetchSearchedUsersFailure = (error) => {
     };
 };
 
-export const fetchComments = (firstname, surname, nickname) => {
+export const fetchSearchedUsers = (firstname, surname, username) => {
     return (dispatch) => {
         dispatch(fetchSearchedUsersRequest());
-        // axios
-        //     .get(
-        //         `https://flowrspot-api.herokuapp.com/api/v1/sightings/${id}/comments?page=${page}`,
-        //         BaseApiClass.requestConfig()
-        //     )
-        //     .then((response) => {
-        //         const comments = response.data.comments;
-        //         dispatch(fetchSearchedUsersSuccess(comments));
-        //     })
-        //     .catch((error) => {
-        //         const errorMsg = error.response.data.error;
-        //         dispatch(fetchSearchedUsersFailure(errorMsg));
-        //     });
+        axios
+            .get(
+                `https://localhost:5001/users/search?firstname=${firstname}&surname=${surname}&username=${username}`
+            )
+            .then((response) => {
+                dispatch(fetchSearchedUsersSuccess(response.data));
+            })
+            .catch((error) => {
+                const errorMsg = error.response.data.error;
+                dispatch(fetchSearchedUsersFailure(errorMsg));
+            });
     };
 };
