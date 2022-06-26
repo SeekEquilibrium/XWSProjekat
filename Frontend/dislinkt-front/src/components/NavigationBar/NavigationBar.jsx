@@ -28,7 +28,6 @@ export const NavigationBar = () => {
     }, [showWarning]);
 
     const onSearch = (event) => {
-        // event.preventDefault();
         if (!firstname && !surname && !nickname) {
             setShowWarning(true);
             return;
