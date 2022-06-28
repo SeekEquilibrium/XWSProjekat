@@ -4,12 +4,26 @@ import { Provider } from "react-redux";
 import store from "./redux/store";
 
 import { NavigationBar } from "./components/NavigationBar/NavigationBar";
+import {
+    BrowserRouter as Router,
+    Route,
+    Routes,
+    Navigate,
+} from "react-router-dom";
+import { UserInfo } from "./components/UserInfo/UserInfo";
 function App() {
     return (
         <Provider store={store}>
-            <div className="App">
-                <NavigationBar />
-            </div>
+            <Router>
+                <div className="App">
+                    <NavigationBar />
+                </div>
+                <div className="Main_Content">
+                    <Routes>
+                        <Route path="/user/:id" element={<UserInfo />} />
+                    </Routes>
+                </div>
+            </Router>
         </Provider>
     );
 }

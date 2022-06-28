@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchSearchedUsers } from "../../redux";
 
-import "./SearchedUsers.css";
+import style from "./SearchedUsers.module.css";
 export const SearchedUsers = ({ firstname, surname, username }) => {
     const dispatch = useDispatch();
     const searchedUsers = useSelector((state) => state.searchedUsers);
@@ -12,9 +12,9 @@ export const SearchedUsers = ({ firstname, surname, username }) => {
     return (
         <>
             {searchedUsers?.users?.map((user) => (
-                <div className="row">
-                    <a className="row-content">{user.username}</a>
-                    <a className="row-content">
+                <div className={style.row}>
+                    <a className={style.row_content}>{user.username}</a>
+                    <a className={style.row_content}>
                         {user.firstname} {user.surname}
                     </a>
                 </div>
