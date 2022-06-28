@@ -20,6 +20,7 @@
 .firstnameSurname {
     font-size: 25px;
     margin-bottom: 0px;
+    text-transform: capitalize;
 }
 
 .username {

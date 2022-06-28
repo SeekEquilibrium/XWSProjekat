@@ -1,45 +1,39 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import style from "./UserInfo.module.css";
 import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchUserInfo } from "../../redux";
 import profileImage from "../../assets/images/profile-image.png";
 export const UserInfo = () => {
     const { id } = useParams();
+    const dispatch = useDispatch();
+    const userInfo = useSelector((state) => state.userInfo);
+    useEffect(() => {
+        dispatch(fetchUserInfo(id));
+        console.log(userInfo.user);
+    }, []);
     return (
         <div>
             <div className={style.header}>
                 <img className={style.profileImage} src={profileImage} />
-                <p className={style.firstnameSurname}>Ivan Ivanovic</p>
-                <p className={style.username}>@ivance</p>
-                <p className={style.email}>ivanovic@gmail.com</p>
+                <p className={style.firstnameSurname}>
+                    {userInfo?.user?.firstname} {userInfo?.user?.surname}
+                </p>
+                <p className={style.username}>@{userInfo?.user?.username}</p>
+                <p className={style.email}>{userInfo?.user?.email}</p>
             </div>
             <div className={style.description}>
                 <div className={style.interests}>
                     <p style={{ marginBottom: "0px", fontSize: "10px" }}>
                         Interests:
                     </p>
-                    <p>
-                        Lorem ipsum dolor, sit amet consectetur adipisicing
-                        elit. Quos pariatur quibusdam ullam fugiat id
-                        perspiciatis similique porro praesentium cumque,
-                        consequatur quae? Praesentium esse eos reiciendis
-                        obcaecati officiis explicabo vero illo.
-                    </p>
+                    <p>{userInfo?.user?.interest}</p>
                 </div>
                 <div className={style.biography}>
                     <p style={{ marginBottom: "0px", fontSize: "10px" }}>
                         Biography:
                     </p>
-                    <p>
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                        Excepturi sapiente itaque earum nihil. Minus nobis est
-                        facere, nisi nemo ea, repellat quis suscipit ipsa
-                        ratione consequatur minima adipisci veritatis
-                        accusantium.Lorem ipsum dolor sit amet consectetur
-                        adipisicing elit. Excepturi sapiente itaque earum nihil.
-                        Minus nobis est facere, nisi nemo ea, repellat quis
-                        suscipit ipsa ratione consequatur minima adipisci
-                        veritatis accusantium.
-                    </p>
+                    <p>{userInfo?.user?.biography}</p>
                 </div>
             </div>
             <hr></hr>
