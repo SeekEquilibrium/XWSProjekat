@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserInfo } from "../../redux";
 import profileImage from "../../assets/images/profile-image.png";
+import { Post } from "../Post/Post";
 export const UserInfo = () => {
     const { id } = useParams();
     const dispatch = useDispatch();
@@ -13,7 +14,7 @@ export const UserInfo = () => {
         console.log(userInfo.user);
     }, []);
     return (
-        <div>
+        <div className={style.page}>
             <div className={style.header}>
                 <img className={style.profileImage} src={profileImage} />
                 <p className={style.firstnameSurname}>
@@ -37,6 +38,10 @@ export const UserInfo = () => {
                 </div>
             </div>
             <hr></hr>
+            <div className={style.postContainer}>
+                <Post />
+                <Post />
+            </div>
         </div>
     );
 };
