@@ -10,6 +10,7 @@ import {
     Toast,
     ToastContainer,
 } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import "./NavigationBar.css";
 
 export const NavigationBar = () => {
@@ -18,6 +19,7 @@ export const NavigationBar = () => {
     const [surname, setSurname] = useState("");
     const [username, setUsername] = useState("");
     const [showWarning, setShowWarning] = useState(false);
+    const navigate = useNavigate();
 
     const toggleShowWarning = () => setShowWarning(!showWarning);
 
@@ -90,7 +92,12 @@ export const NavigationBar = () => {
                     </Form>
                     <div className="navbar-buttons">
                         <Button variant="primary">Sign In</Button>{" "}
-                        <Button variant="primary">Sign Up</Button>{" "}
+                        <Button
+                            onClick={() => navigate("/registration")}
+                            variant="primary"
+                        >
+                            Sign Up
+                        </Button>{" "}
                     </div>
                 </Container>
             </Navbar>

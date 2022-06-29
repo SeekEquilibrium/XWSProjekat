@@ -11,6 +11,7 @@ import {
     Navigate,
 } from "react-router-dom";
 import { UserInfo } from "./components/UserInfo/UserInfo";
+import { Registration } from "./components/Registration/Registration";
 function App() {
     return (
         <Provider store={store}>
@@ -21,6 +22,10 @@ function App() {
                 <div className="Main_Content">
                     <Routes>
                         <Route path="/user/:id" element={<UserInfo />} />
+                        <Route
+                            path="/registration"
+                            element={<Registration />}
+                        />
                     </Routes>
                 </div>
             </Router>
