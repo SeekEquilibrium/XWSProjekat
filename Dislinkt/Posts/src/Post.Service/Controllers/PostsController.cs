@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Post.Service.Clients;
 using Post.Service.DTO;
 using Post.Service.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Post.Service.Controllers
 {
@@ -34,7 +35,7 @@ namespace Post.Service.Controllers
 
             if(post == null) return BadRequest();
              
-            UserDTO userDto = await _userClient.GetUserAsync(post.UserId);
+            UserDTO userDto = await _userClient.GetUserAsync(_userClient.GetUserId().Result);
             PostDTO postDto = new PostDTO(
                 post.Id, post.Text, post.PostDate,
                 userDto.Id, userDto.Firstname, userDto.Surname, userDto.Username
@@ -70,11 +71,10 @@ namespace Post.Service.Controllers
         }
 
         [HttpGet("userPosts")]
-        public async Task<ActionResult<IEnumerable<UserPost>>> GetByUserAsync(Guid userId)        //provere pracenje i private user
+        public async Task<ActionResult<IEnumerable<UserPost>>> GetByUserAsync()        //provere pracenje i private user
         {
-            if(userId == Guid.Empty) return BadRequest();
-
-            var posts = await _postRepository.GetAllAsync(post => post.UserId.Equals(userId));
+        
+            var posts = await _postRepository.GetAllAsync(post => post.UserId.Equals(_userClient.GetUserId().Result));
 
             return Ok(posts);
         }
@@ -83,9 +83,11 @@ namespace Post.Service.Controllers
         public async Task<ActionResult<IEnumerable<UserPost>>> LikePostAsync(InteractionDTO interactionDTO)
         {
             var postInteraction = await _interactionRepository.GetAsync(interactionDTO.PostId);   //TO DO: dodati provere jel vec like/dislike
-            postInteraction.Likes = postInteraction.Likes.Append<Guid>(interactionDTO.UserId);
-            await _interactionRepository.UpdateAsync(postInteraction);
-
+            if(!postInteraction.Likes.Contains(_userClient.GetUserId().Result))
+            {
+                postInteraction.Likes = postInteraction.Likes.Append<Guid>(_userClient.GetUserId().Result);
+                await _interactionRepository.UpdateAsync(postInteraction);
+            }
             return Ok();
         }
 
@@ -93,9 +95,12 @@ namespace Post.Service.Controllers
         public async Task<ActionResult<IEnumerable<UserPost>>> DislikePostAsync(InteractionDTO interactionDTO)
         {
             var postInteraction = await _interactionRepository.GetAsync(interactionDTO.PostId);      //TO DO: dodati provere jel vec like/dislike
-            postInteraction.Dislikes = postInteraction.Dislikes.Append<Guid>(interactionDTO.UserId);
-            await _interactionRepository.UpdateAsync(postInteraction);
-            
+            if(!postInteraction.Likes.Contains(_userClient.GetUserId().Result))
+            {
+                postInteraction.Dislikes = postInteraction.Dislikes.Append<Guid>(_userClient.GetUserId().Result);
+                await _interactionRepository.UpdateAsync(postInteraction);
+      
+            }        
             return Ok();
         }
 
@@ -103,7 +108,7 @@ namespace Post.Service.Controllers
         public async Task<ActionResult<IEnumerable<UserPost>>> CommentAsync(CommentDTO commentDTO)
         {
             var postInteraction = await _interactionRepository.GetAsync(commentDTO.PostId);
-            Comment comment = new Comment(commentDTO.UserId, commentDTO.Text, DateTimeOffset.Now);
+            Comment comment = new Comment(_userClient.GetUserId().Result, commentDTO.Text, DateTimeOffset.Now);
             postInteraction.Comments = postInteraction.Comments.Append<Comment>(comment);
             await _interactionRepository.UpdateAsync(postInteraction);
 

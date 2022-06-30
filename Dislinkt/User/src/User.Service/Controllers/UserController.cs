@@ -66,6 +66,13 @@ namespace User.Service.Controllers
 
             return Ok(users);
         }
+        [HttpGet("getId"), Authorize]
+        public async Task<ActionResult<String>> GetIdAsync()
+        {
+            var id = await _userService.GetUserId();
+
+            return Ok(id);
+        }
 
 
         [HttpGet("search")]

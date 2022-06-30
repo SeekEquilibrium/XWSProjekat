@@ -20,5 +20,10 @@ namespace Post.Service.Clients
             var user = await httpClient.GetFromJsonAsync<UserDTO>($"/users/{UserId}");
             return user;
         }
+        public async Task<Guid> GetUserId()
+        {
+            var id = await httpClient.GetFromJsonAsync<Guid>($"/users/getId");
+            return id;
+        }
     }
 }

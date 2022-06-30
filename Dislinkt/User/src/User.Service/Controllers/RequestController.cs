@@ -4,6 +4,7 @@ using User.Service.Models;
 using User.Service.DTO;
 using Common;
 using User.Service.Service.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace User.Service.Controllers
 {
@@ -23,8 +24,8 @@ namespace User.Service.Controllers
             _requestRepository = requestRepository;
         }
 
-        [HttpPost]
-        public async Task<ActionResult<IEnumerable<Request>>> PostAsync(RequestDTO requestDTO)
+        [HttpPost, Authorize]
+        public async Task<ActionResult<IEnumerable<Request>>> PostAsync(Guid reciever)
         {
             /*
             if(_userService.isPrivate(requestDTO.reciever))
@@ -36,7 +37,7 @@ namespace User.Service.Controllers
                 //poslati zahtev connection endpointu da kreira konekciju
             }
             */
-            await _requestService.CreateRequest(requestDTO.Sender, requestDTO.Reciever);
+            await _requestService.CreateRequest(reciever);
             return Ok();
         }
 
@@ -48,10 +49,10 @@ namespace User.Service.Controllers
         }
 
 
-        [HttpPost("confirm")]
-        public async Task<ActionResult> ConfirmRequest(RequestDTO requestDTO)
+        [HttpPost("confirm"), Authorize]
+        public async Task<ActionResult> ConfirmRequest(Guid reciever )
         {
-            await _requestService.Confirm(requestDTO.Sender,requestDTO.Reciever);
+            await _requestService.Confirm(reciever);
             return Ok();
         }
     }

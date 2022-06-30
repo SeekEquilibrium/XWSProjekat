@@ -11,14 +11,17 @@ namespace User.Service.Service.Implements
         private readonly IRepository<Request> _requestRepository;
 
         private readonly ConnectionClient _connectclient;
+        private readonly IUserService _userService;
 
-        public RequestSevice(IRepository<Request> requestRepository, ConnectionClient connectclient)
+        public RequestSevice(IRepository<Request> requestRepository, ConnectionClient connectclient , IUserService userService)
         {
             _requestRepository = requestRepository;
             _connectclient = connectclient;
+            _userService = userService;
         }
 
-        public async Task CreateRequest(Guid sender, Guid reciever){
+        public async Task CreateRequest(Guid reciever){
+            Guid sender = _userService.GetUserId().Result;
             Request request = new Request(sender, reciever);
             /*if(GetRequest(sender, reciever) == null)
             {
@@ -32,8 +35,9 @@ namespace User.Service.Service.Implements
             return requests;            
         }
 
-        public async Task Confirm(Guid sender, Guid reciever)
+        public async Task Confirm( Guid reciever)
         {
+            Guid sender = _userService.GetUserId().Result;
             Request request = await GetRequest(sender, reciever);
             if(request != null){
                 await _connectclient.ConnectAsync(sender, reciever);
