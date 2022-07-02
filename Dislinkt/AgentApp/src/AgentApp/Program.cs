@@ -9,6 +9,7 @@ ServiceSettings serviceSettings = builder.Configuration.GetSection(nameof(Servic
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<CompanyService>();
 builder.Services.AddScoped<JobService>();
+builder.Services.AddScoped<CommentService>();
 
 // Add services to the container.
 
@@ -27,6 +28,9 @@ builder.Services.AddMongoRepository<User>("appUsers")
 
 builder.Services.AddMongoRepository<Job>("jobs")
                 .AddAutoMapper();
+
+builder.Services.AddMongoRepository<Comment>("comments")
+                .AddAutoMapper();       
 
 var app = builder.Build();
 

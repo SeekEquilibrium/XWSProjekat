@@ -15,6 +15,8 @@ namespace AgentApp.Mappers
                 CreateMap<CompanyDTO, Company>();
                 CreateMap<Job, JobDTO>();
                 CreateMap<JobDTO, Job>();
+                CreateMap<Comment, CommentDTO>();
+                CreateMap<CommentDTO, Comment>();
             }
         }
     }

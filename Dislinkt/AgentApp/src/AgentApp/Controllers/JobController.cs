@@ -39,7 +39,7 @@ namespace AgentApp.Controller
         public async Task<ActionResult<Job>> GetByCompanyId(Guid id)
         {
             var jobs = (await _jobService.GetAllByCompanyId(id))
-                        .Select(job => _mapper.Map<CompanyDTO>(job));
+                        .Select(job => _mapper.Map<JobDTO>(job));
             
             return Ok(jobs);
         }
