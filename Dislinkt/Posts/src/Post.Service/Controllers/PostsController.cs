@@ -57,14 +57,14 @@ namespace Post.Service.Controllers
         }
 
         [HttpGet("feed")]
-        public async Task<ActionResult<IEnumerable<UserPost>>> GetFeedAsync(Guid userId)      //id iz tokena
+        public async Task<ActionResult<IEnumerable<UserPost>>> GetFeedAsync()      //id iz tokena
         {
-            var users = await _connectionClient.GetConnectedAsync(userId);
+            var users = await _connectionClient.GetConnectedAsync(_userClient.GetUserId().Result);
             IEnumerable<UserPost> feed = Enumerable.Empty<UserPost>();
 
             foreach(ConnectionDTO user in users)
             {
-                feed = feed.Concat<UserPost>(await _postRepository.GetAllAsync(post => post.UserId.Equals(user.Id)));
+                feed = feed.Concat<UserPost>(await _postRepository.GetAllAsync(post => post.UserId.Equals(_userClient.GetUserId().Result)));
             }
 
             return Ok(feed);
