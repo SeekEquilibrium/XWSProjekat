@@ -1,17 +1,20 @@
 import { useState, useEffect } from "react";
 import style from "./Registration.module.css";
 import { Form, Button, Alert } from "react-bootstrap";
+import { RegisterUser } from "../../APIs/UserServiceAPI";
 export const Registration = () => {
     const [firstname, setFirstname] = useState("");
     const [surname, setSurname] = useState("");
-    const [gender, setGender] = useState(null);
+    const [gender, setGender] = useState(0);
     const [email, setEmail] = useState("");
+    const [birthDate, setBirthDate] = useState("");
     const [telephone, setTelephone] = useState("");
-    const [interests, setInterests] = useState("");
+    const [interest, setInterest] = useState("");
     const [biography, setBiography] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [repeatPassword, setRepeatPassword] = useState("");
+    const [isPrivate, setIsPrivate] = useState(true);
 
     const onSubmit = (event) => {
         event.preventDefault();
@@ -21,14 +24,36 @@ export const Registration = () => {
             !gender &&
             !email &&
             !telephone &&
-            !interests &&
-            !interests &&
+            !interest &&
+            !birthDate &&
             !biography &&
             !username &&
             !password &&
             !repeatPassword
         ) {
+            console.log("Inputs cannot be empty!");
+            return;
         }
+        console.log("OK");
+        if (password != repeatPassword) {
+            console.log("Passwords do not match!");
+            return;
+        }
+        const User = {
+            firstname,
+            surname,
+            gender,
+            email,
+            telephone,
+            interest,
+            birthDate,
+            biography,
+            username,
+            password,
+            repeatPassword,
+            isPrivate,
+        };
+        RegisterUser(User);
     };
 
     return (
@@ -66,6 +91,14 @@ export const Registration = () => {
                 <Form.Group className="mb-3" controlId="formBasicEmail">
                     <Form.Label>Email address</Form.Label>
                     <Form.Control
+                        type="date"
+                        placeholder="Birth date"
+                        onChange={(e) => setBirthDate(e.target.value)}
+                    />
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="formBasicEmail">
+                    <Form.Label>Email address</Form.Label>
+                    <Form.Control
                         type="email"
                         placeholder="Email"
                         onChange={(e) => setEmail(e.target.value)}
@@ -84,7 +117,7 @@ export const Registration = () => {
                     <Form.Control
                         as="textarea"
                         rows={3}
-                        onChange={(e) => setInterests(e.target.value)}
+                        onChange={(e) => setInterest(e.target.value)}
                     />{" "}
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="formBasicPassword">
@@ -119,6 +152,19 @@ export const Registration = () => {
                         onChange={(e) => setRepeatPassword(e.target.value)}
                     />
                 </Form.Group>
+                <Form.Group className={style.input}>
+                    <Form.Label>
+                        Do you want your account to be private?
+                    </Form.Label>
+                    <Form.Select
+                        aria-label="Default select example"
+                        onChange={(e) => setIsPrivate(e.target.value)}
+                    >
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </Form.Select>
+                </Form.Group>
+                <br></br>
                 <Button variant="primary" type="submit">
                     Submit
                 </Button>
