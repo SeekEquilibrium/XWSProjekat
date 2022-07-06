@@ -97,5 +97,14 @@ namespace User.Service.Controllers
             var responseUser = _mapper.Map<UserInfoDTO>(user);
             return responseUser;
         }
+
+        [HttpGet("myInfo"), Authorize]
+        public async Task<ActionResult<UserDTO>> GetMyInfo()
+        {
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            AppUser currentUser = await _userService.GetUserById(new Guid(currentUserId));
+            UserDTO userDTO = _mapper.Map<UserDTO>(currentUser);
+            return Ok(userDTO);
+        }
     }
 }

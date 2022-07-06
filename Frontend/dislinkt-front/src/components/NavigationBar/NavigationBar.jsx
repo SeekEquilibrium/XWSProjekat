@@ -12,16 +12,33 @@ import {
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import "./NavigationBar.css";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchMyInfo } from "../../redux";
 
 export const NavigationBar = () => {
+    const dispatch = useDispatch();
+    const myInfo = useSelector((state) => state.myInfo);
+
     const [searchClicked, setSearchClicked] = useState(false);
     const [firstname, setFirstname] = useState("");
     const [surname, setSurname] = useState("");
     const [username, setUsername] = useState("");
     const [showWarning, setShowWarning] = useState(false);
+    const [token, setToken] = useState(null);
     const navigate = useNavigate();
 
     const toggleShowWarning = () => setShowWarning(!showWarning);
+
+    useEffect(() => {
+        setToken(localStorage.getItem("token"));
+    }, []);
+
+    useEffect(() => {
+        console.log("TOKEN", token);
+        if (token != null) {
+            dispatch(fetchMyInfo());
+        }
+    }, [token]);
 
     useEffect(() => {
         setTimeout(function () {
@@ -36,6 +53,11 @@ export const NavigationBar = () => {
             return;
         }
         setSearchClicked(true);
+    };
+
+    const logout = () => {
+        localStorage.removeItem("token");
+        document.location.reload(true);
     };
 
     return (
@@ -90,20 +112,31 @@ export const NavigationBar = () => {
                             </Toast>
                         </ToastContainer>
                     </Form>
-                    <div className="navbar-buttons">
-                        <Button
-                            onClick={() => navigate("/login")}
-                            variant="primary"
-                        >
-                            Sign In
-                        </Button>{" "}
-                        <Button
-                            onClick={() => navigate("/registration")}
-                            variant="primary"
-                        >
-                            Sign Up
-                        </Button>{" "}
-                    </div>
+                    {!token ? (
+                        <div className="navbar-buttons">
+                            <Button
+                                onClick={() => navigate("/login")}
+                                variant="primary"
+                            >
+                                Sign In
+                            </Button>{" "}
+                            <Button
+                                onClick={() => navigate("/registration")}
+                                variant="primary"
+                            >
+                                Sign Up
+                            </Button>{" "}
+                        </div>
+                    ) : (
+                        <>
+                            <Button
+                                onClick={() => logout()}
+                                variant="outline-dark"
+                            >
+                                Log out
+                            </Button>{" "}
+                        </>
+                    )}
                 </Container>
             </Navbar>
             <Modal

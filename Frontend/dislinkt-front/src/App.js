@@ -14,6 +14,8 @@ import { UserInfo } from "./components/UserInfo/UserInfo";
 import { Registration } from "./components/Registration/Registration";
 import { Login } from "./components/Login/Login";
 function App() {
+    const isSignedIn = !!localStorage.getItem("token");
+    console.log("isSignedIn", isSignedIn);
     return (
         <Provider store={store}>
             <Router>
@@ -23,11 +25,16 @@ function App() {
                 <div className="Main_Content">
                     <Routes>
                         <Route path="/user/:id" element={<UserInfo />} />
-                        <Route
-                            path="/registration"
-                            element={<Registration />}
-                        />
-                        <Route path="/login" element={<Login />} />
+                        {!isSignedIn && (
+                            <>
+                                <Route
+                                    path="/registration"
+                                    element={<Registration />}
+                                />
+                                <Route path="/login" element={<Login />} />
+                            </>
+                        )}
+                        {/* <Route path="*" element={<Navigate to="/" replace />} /> */}
                     </Routes>
                 </div>
             </Router>
