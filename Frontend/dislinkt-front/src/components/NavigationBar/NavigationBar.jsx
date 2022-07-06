@@ -91,7 +91,12 @@ export const NavigationBar = () => {
                         </ToastContainer>
                     </Form>
                     <div className="navbar-buttons">
-                        <Button variant="primary">Sign In</Button>{" "}
+                        <Button
+                            onClick={() => navigate("/login")}
+                            variant="primary"
+                        >
+                            Sign In
+                        </Button>{" "}
                         <Button
                             onClick={() => navigate("/registration")}
                             variant="primary"

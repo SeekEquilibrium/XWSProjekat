@@ -1,19 +1,6 @@
 import axios from "axios";
 
 export const RegisterUser = (user) => {
-    console.log(user);
-    const firstname = user.firstname;
-    const surname = user.surname;
-    const email = user.email;
-    const telephone = user.telephone;
-    const gender = user.gender;
-    const birthDate = user.birthDate;
-    const biography = user.biography;
-    const username = user.username;
-    const interest = user.interest;
-    const skills = user.skills;
-    const password = user.password;
-    const isPrivate = user.isPrivate;
     axios
         .post("https://localhost:5001/auth/register", {
             firstname: user.firstname,
@@ -31,6 +18,19 @@ export const RegisterUser = (user) => {
         })
         .then((response) => {
             console.log(response);
+        })
+        .catch((error) => console.log(error));
+};
+
+export const SignInUser = (username, password) => {
+    axios
+        .post("https://localhost:5001/auth/login", {
+            username,
+            password,
+        })
+        .then((response) => {
+            console.log(response);
+            localStorage.setItem("token", response.data);
         })
         .catch((error) => console.log(error));
 };

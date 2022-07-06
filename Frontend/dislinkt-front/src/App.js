@@ -12,6 +12,7 @@ import {
 } from "react-router-dom";
 import { UserInfo } from "./components/UserInfo/UserInfo";
 import { Registration } from "./components/Registration/Registration";
+import { Login } from "./components/Login/Login";
 function App() {
     return (
         <Provider store={store}>
@@ -26,6 +27,7 @@ function App() {
                             path="/registration"
                             element={<Registration />}
                         />
+                        <Route path="/login" element={<Login />} />
                     </Routes>
                 </div>
             </Router>
