@@ -57,7 +57,7 @@ export const NavigationBar = () => {
 
     const logout = () => {
         localStorage.removeItem("token");
-        document.location.reload(true);
+        window.location.reload(true);
     };
 
     const closeModal = () => {

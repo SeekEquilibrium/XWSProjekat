@@ -17,6 +17,7 @@
     font-size: 40px;
     top: 30%;
     left: 10%;
+    user-select: none;
 }
 
 .text2 {
@@ -26,8 +27,8 @@
     font-weight: 700;
     font-size: 80px;
     top: 40%;
-
     left: 10%;
+    user-select: none;
 }
 
 .text2:hover {

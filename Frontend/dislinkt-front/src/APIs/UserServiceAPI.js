@@ -22,15 +22,9 @@ export const RegisterUser = (user) => {
         .catch((error) => console.log(error));
 };
 
-export const SignInUser = (username, password) => {
-    axios
-        .post("https://localhost:5001/auth/login", {
-            username,
-            password,
-        })
-        .then((response) => {
-            console.log(response);
-            localStorage.setItem("token", response.data);
-        })
-        .catch((error) => console.log(error));
+export const SignInUser = async (username, password) => {
+    return await axios.post("https://localhost:5001/auth/login", {
+        username,
+        password,
+    });
 };
