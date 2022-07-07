@@ -1,0 +1,35 @@
+.page {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
+.image {
+    width: 100%;
+}
+
+.text1 {
+    position: absolute;
+    color: white;
+    font-family: "Ubuntu", sans-serif;
+    font-weight: 400;
+    font-size: 40px;
+    top: 30%;
+    left: 10%;
+}
+
+.text2 {
+    position: absolute;
+    color: white;
+    font-family: "Ubuntu", sans-serif;
+    font-weight: 700;
+    font-size: 80px;
+    top: 40%;
+
+    left: 10%;
+}
+
+.text2:hover {
+    transform: scale(1.01);
+}

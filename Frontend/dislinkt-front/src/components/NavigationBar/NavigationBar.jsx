@@ -66,9 +66,9 @@ export const NavigationBar = () => {
 
     return (
         <>
-            <Navbar bg="light" expand="lg">
+            <Navbar bg="light" variant="primary" expand="lg">
                 <Container>
-                    <Navbar.Brand href="#home">Dislinkt</Navbar.Brand>
+                    <Navbar.Brand href="/">Dislinkt</Navbar.Brand>
                     <Form className="flex-row-center" onSubmit={onSearch}>
                         <FormControl
                             type="search"

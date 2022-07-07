@@ -13,6 +13,7 @@ import {
 import { UserInfo } from "./components/UserInfo/UserInfo";
 import { Registration } from "./components/Registration/Registration";
 import { Login } from "./components/Login/Login";
+import { LandingPage } from "./components/LandingPage/LandingPage";
 function App() {
     const isSignedIn = !!localStorage.getItem("token");
     console.log("isSignedIn", isSignedIn);
@@ -24,6 +25,7 @@ function App() {
                 </div>
                 <div className="Main_Content">
                     <Routes>
+                        <Route path="/" element={<LandingPage />} />
                         <Route path="/user/:id" element={<UserInfo />} />
                         {!isSignedIn && (
                             <>
@@ -34,7 +36,7 @@ function App() {
                                 <Route path="/login" element={<Login />} />
                             </>
                         )}
-                        {/* <Route path="*" element={<Navigate to="/" replace />} /> */}
+                        <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>
                 </div>
             </Router>
