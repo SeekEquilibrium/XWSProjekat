@@ -60,6 +60,10 @@ export const NavigationBar = () => {
         document.location.reload(true);
     };
 
+    const closeModal = () => {
+        setSearchClicked(false);
+    };
+
     return (
         <>
             <Navbar bg="light" expand="lg">
@@ -153,6 +157,7 @@ export const NavigationBar = () => {
                         firstname={firstname}
                         surname={surname}
                         username={username}
+                        closeModal={closeModal}
                     />
                 </Modal.Body>
             </Modal>
