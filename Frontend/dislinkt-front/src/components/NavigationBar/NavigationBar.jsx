@@ -9,6 +9,7 @@ import {
     Modal,
     Toast,
     ToastContainer,
+    Dropdown,
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import "./NavigationBar.css";
@@ -53,6 +54,10 @@ export const NavigationBar = () => {
             return;
         }
         setSearchClicked(true);
+    };
+
+    const goToMyProfile = () => {
+        navigate(`/user/${myInfo.user.id}`);
     };
 
     const logout = () => {
@@ -133,12 +138,42 @@ export const NavigationBar = () => {
                         </div>
                     ) : (
                         <>
-                            <Button
+                            <Dropdown>
+                                <Dropdown.Toggle
+                                    variant="outline-primary"
+                                    id="dropdown-basic"
+                                >
+                                    Options
+                                </Dropdown.Toggle>
+
+                                <Dropdown.Menu>
+                                    <Dropdown.Item href="#/action-1">
+                                        Action
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                        onClick={() => goToMyProfile()}
+                                    >
+                                        Go to your profile
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                        onClick={() => goToMyProfile()}
+                                    >
+                                        Edit profile
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                        className="logout"
+                                        onClick={() => logout()}
+                                    >
+                                        Logout
+                                    </Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
+                            {/* <Button
                                 onClick={() => logout()}
                                 variant="outline-dark"
                             >
                                 Log out
-                            </Button>{" "}
+                            </Button>{" "} */}
                         </>
                     )}
                 </Container>

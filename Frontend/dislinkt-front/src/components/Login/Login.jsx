@@ -16,7 +16,7 @@ export const Login = () => {
         }
         SignInUser(username, password)
             ?.then((response) => {
-                localStorage.setItem("token", response);
+                localStorage.setItem("token", response.data);
                 window.location.reload();
             })
             .catch((error) => alert(error.message));
