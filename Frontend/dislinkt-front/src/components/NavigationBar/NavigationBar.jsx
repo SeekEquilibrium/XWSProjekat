@@ -57,7 +57,11 @@ export const NavigationBar = () => {
     };
 
     const goToMyProfile = () => {
-        navigate(`/user/${myInfo.user.id}`);
+        navigate(`/user/${myInfo?.user?.id}`);
+    };
+
+    const goToEdit = () => {
+        navigate("/edit");
     };
 
     const logout = () => {
@@ -155,9 +159,7 @@ export const NavigationBar = () => {
                                     >
                                         Go to your profile
                                     </Dropdown.Item>
-                                    <Dropdown.Item
-                                        onClick={() => goToMyProfile()}
-                                    >
+                                    <Dropdown.Item onClick={() => goToEdit()}>
                                         Edit profile
                                     </Dropdown.Item>
                                     <Dropdown.Item

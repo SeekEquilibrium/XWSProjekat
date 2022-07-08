@@ -99,11 +99,11 @@ namespace User.Service.Controllers
         }
 
         [HttpGet("myInfo"), Authorize]
-        public async Task<ActionResult<UserDTO>> GetMyInfo()
+        public async Task<ActionResult<UserEditDTO>> GetMyInfo()
         {
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             AppUser currentUser = await _userService.GetUserById(new Guid(currentUserId));
-            UserDTO userDTO = _mapper.Map<UserDTO>(currentUser);
+            UserEditDTO userDTO = _mapper.Map<UserEditDTO>(currentUser);
             return Ok(userDTO);
         }
     }
