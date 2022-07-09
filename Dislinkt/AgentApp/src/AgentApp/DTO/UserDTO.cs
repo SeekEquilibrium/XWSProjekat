@@ -16,8 +16,5 @@ namespace AgentApp.DTO
             this.Password = password;
             this.Email = email;
         }
-
-        public UserDTO()
-        { }
     }
 }

@@ -3,6 +3,7 @@ using AgentApp.Models;
 using AgentApp.DTO;
 using AgentApp.Services;
 using AutoMapper;
+using AgentApp.Clients;
 
 namespace AgentApp.Controller
 {    
@@ -12,11 +13,15 @@ namespace AgentApp.Controller
     {
         public readonly CompanyService _companyService;
         public readonly UserService _userService;
+        public readonly JobOfferService _jobOfferService;
+        public readonly JobOfferClient _jobOfferClient;
         public readonly IMapper _mapper;
-        public CompanyController(CompanyService companyService, UserService userService, IMapper mapper)
+        public CompanyController(CompanyService companyService, UserService userService, JobOfferService jobOfferService, JobOfferClient jobOfferClient, IMapper mapper)
         {
             _companyService = companyService;
             _userService = userService;
+            _jobOfferService = jobOfferService;
+            _jobOfferClient = jobOfferClient;
             _mapper = mapper;
         }
 
@@ -82,6 +87,32 @@ namespace AgentApp.Controller
 
             return Ok();
         }
+
+        [HttpPost("jobOffer")]
+         public async Task<ActionResult<Company>> CreateJobOffer(JobOfferDTO jobOfferDTO)
+         {
+            if(await _companyService.GetCompanyByName(jobOfferDTO.CompanyName) == null)
+            {
+                return NotFound("Company not found.");
+            }
+
+            JobOffer offer = _mapper.Map<JobOffer>(jobOfferDTO);
+            await _jobOfferService.CreateJobOffer(offer);
+
+            await _jobOfferClient.PostJobOffer(jobOfferDTO);
+
+            return Ok(offer);
+         }
+
+         [HttpGet("jobOffers/{companyName}")]
+         public async Task<ActionResult<IEnumerable<JobOfferDTO>>> GetJobOffersByCompany(String companyName)
+         {
+            IEnumerable<JobOfferDTO> offers = (await _jobOfferService.GetAllByCompany(companyName))
+                        .Select(offer => _mapper.Map<JobOfferDTO>(offer));
+
+            return Ok(offers);
+         }
+
     }
 
 }

@@ -2,6 +2,7 @@ using Common.MongoDB;
 using Common.Settings;
 using AgentApp.Models;
 using AgentApp.Services;
+using AgentApp.Clients;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,7 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<CompanyService>();
 builder.Services.AddScoped<JobService>();
 builder.Services.AddScoped<CommentService>();
+builder.Services.AddScoped<JobOfferService>();
 
 // Add services to the container.
 
@@ -30,7 +32,15 @@ builder.Services.AddMongoRepository<Job>("jobs")
                 .AddAutoMapper();
 
 builder.Services.AddMongoRepository<Comment>("comments")
-                .AddAutoMapper();       
+                .AddAutoMapper();  
+
+builder.Services.AddMongoRepository<JobOffer>("offers")
+                .AddAutoMapper(); 
+
+builder.Services.AddHttpClient<JobOfferClient>(client =>
+            {
+                client.BaseAddress = new Uri("https://localhost:5010");
+            });    
 
 var app = builder.Build();
 
