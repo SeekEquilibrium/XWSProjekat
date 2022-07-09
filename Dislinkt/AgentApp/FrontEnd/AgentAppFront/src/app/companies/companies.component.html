@@ -1,0 +1,29 @@
+<div class="panel panel-primary m-1">
+    
+    <button *ngIf="User.role == 1" class="btn btn-primary m-3" routerLink="register-company"><strong>Register Company</strong></button>
+    <button class="btn btn-primary m-3" (click)="Comments()"><strong>Comments</strong></button>
+    <button class="btn btn-primary m-3" (click)="Jobs()"><strong>Jobs</strong></button>
+
+    <div class="table-responsive m-1">
+        <table class="table table-bordered table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th *ngIf="User.role == 0" >Confirm</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor='let Company of Companies' (click)="RowSelected(Company)" (dblclick)="Edit()">
+                    <td>{{Company.name}}</td>
+                    <td>{{Company.email}}</td>
+                    <td>{{Company.phoneNumber}}</td>
+                    <td *ngIf="!Company.confirmed && User.role == 0" style="width: 10%">
+                        <button class="btn btn-primary" (click)="Confirm(Company.id)"><strong>Confirm</strong></button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

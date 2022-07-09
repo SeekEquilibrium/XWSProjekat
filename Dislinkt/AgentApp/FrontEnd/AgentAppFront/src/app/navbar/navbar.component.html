@@ -1,0 +1,11 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">
+        <a class="nav-item nav-link active" routerLink="companies">Companies</a>
+        <a *ngIf="User.role == 2" class="nav-item nav-link" routerLink="job-offer">Create Job Offer</a>     
+        <a *ngIf="User.id == null" class="nav-item nav-link" style="margin-left: 1600px" routerLink="register">Register</a>
+        <a *ngIf="User.id == null" class="nav-item nav-link" routerLink="login">Login</a>
+        <a *ngIf="User" class="nav-item nav-link" style="margin-left: 1600px" (click)="Logout()">Logout</a>
+      </div>
+    </div>
+  </nav>

@@ -1,0 +1,25 @@
+<div class="container register-form">
+
+    <div class="form-content">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group mb-3">
+                    <input type="text" class="form-control" [(ngModel)]="Job" placeholder="Job" value=""/>
+                </div>
+                <div class="form-group mb-3">
+                    <input type="text" class="form-control" [(ngModel)]="Company" placeholder="Company Name" value=""/>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group mb-3">
+                    <input type="text" class="form-control" [(ngModel)]="Description" placeholder="Description" value=""/>
+                </div>
+                <div class="form-group mb-3">
+                    <input type="text" class="form-control" [(ngModel)]="Requirements" placeholder="Requirements" value=""/>
+                </div>
+            </div>
+        </div>
+        <button type="button" class="btnSubmit" (click)="Create()">Create</button>
+    </div>
+
+</div>

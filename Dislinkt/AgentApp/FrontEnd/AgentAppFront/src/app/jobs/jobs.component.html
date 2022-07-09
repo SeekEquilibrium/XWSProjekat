@@ -1,0 +1,17 @@
+<div class="panel panel-primary m-5">
+    <div class="border bg-light">
+    <ul class="list-group m-3" *ngFor='let Job of Jobs'>
+        <li class="list-group-item">{{Job.name}}</li>
+    </ul>
+    </div>
+
+    <div *ngIf="User.role == 2" class="border mt-5 bg-light">
+    <div class="form-group row mt-5 h5 mx-3">
+        <label for="staticEmail" class="col-sm-2 col-form-label">Job name:</label>
+        <div class="col-sm-10">
+            <input type="text"  class="form-control-plaintext border border-primary" name="name" [(ngModel)]="Name">
+        </div>
+    </div>
+    <button type="button" class="btn btn-primary m-3" (click)="Post()">Post job</button>
+    </div>
+</div>

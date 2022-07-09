@@ -26,12 +26,19 @@ namespace AgentApp.Controller
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CompanyDTO>>> GetAsync()
+        public async Task<ActionResult<IEnumerable<Company>>> GetAsync()
         {
-            var companies = (await _companyService.GetAll())
-                        .Select(company => _mapper.Map<CompanyDTO>(company));
+            var companies = (await _companyService.GetAll());
 
             return Ok(companies);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Company>> GetById(Guid id)
+        {
+            var company = await _companyService.GetCompanyById(id);
+
+            return Ok(company);
         }
 
         [HttpPost("register")]

@@ -48,21 +48,21 @@ namespace AgentApp.Controller
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<string>> Login(LoginDTO request)
+        public async Task<ActionResult<User>> Login(LoginDTO request)
         {
             User user = await _userService.GetUserByUsername(request.Username);
             if(user == null){
                 return BadRequest("User not found.");
             }
 
-            if (request.Password.Equals(user.Password))
+            if (!request.Password.Equals(user.Password))
             {
                 return BadRequest("Wrong password.");
             }
 
             //napraviti token
 
-            return Ok();
+            return Ok(user);
         }
     }
 }
