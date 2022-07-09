@@ -1,0 +1,21 @@
+.row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    justify-content: start;
+    column-gap: 20px;
+}
+
+.row_content {
+    font-size: large;
+    font-weight: 500;
+    width: auto;
+    text-decoration: none;
+    color: rgb(33, 72, 172);
+    text-decoration: none;
+    user-select: none;
+}
+
+.row_content:hover {
+    color: rgb(0, 140, 255);
+}

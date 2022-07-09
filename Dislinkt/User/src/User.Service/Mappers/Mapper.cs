@@ -12,6 +12,9 @@ namespace User.Service.Mappers
                 CreateMap<AppUser, UserDTO>();
                 CreateMap<UserDTO, AppUser>();
 
+                CreateMap<AppUser, UserInfoDTO>();
+                CreateMap<UserInfoDTO, AppUser>();
+
                 CreateMap<AppUser, UserEditDTO>();
                 CreateMap<UserEditDTO, AppUser>();
             }
