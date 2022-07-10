@@ -1,3 +1,26 @@
 syntax = "proto3";
 
-option csharp_namespace = "Connection.Service.Service.protos.ConnectionProto";
+option csharp_namespace = "Connections.Service.protos.ConnectionProto";
+
+import "google/protobuf/empty.proto";
+
+service ConnectionProtoService {
+    rpc Get(google.protobuf.Empty) returns (stream ConnectionModel);
+    rpc GetById(GetRequest) returns (ConnectionModel);
+    rpc Create(ConnectionModel) returns (google.protobuf.Empty);
+    rpc ConnectUsers(TwoUsersModel) returns (google.protobuf.Empty);
+    rpc GetFollowers(GetRequest) returns (stream ConnectionModel);
+    rpc GetRecommendations(GetRequest) returns (stream ConnectionModel);
+}
+
+
+message ConnectionModel {
+    string value= 1;
+}
+message GetRequest {
+    string value = 1;
+}
+message TwoUsersModel{
+    string value = 1;
+    string value2 = 2;
+}

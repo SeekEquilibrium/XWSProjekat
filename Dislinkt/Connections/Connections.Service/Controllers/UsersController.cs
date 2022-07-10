@@ -2,6 +2,7 @@ using Model;
 using Microsoft.AspNetCore.Mvc;
 using Neo4jClient;
 using Connections.Service.Service;
+using Connections.Service.protos.ConnectionProto;
 
 namespace UsersController
 {
@@ -23,7 +24,7 @@ namespace UsersController
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var users = await _connectionService.Get();
+            var users = await _connectionService.Get(new Google.Protobuf.WellKnownTypes.Empty(), null);
 
             return Ok(users);
         }
@@ -31,7 +32,8 @@ namespace UsersController
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var users = await _connectionService.GetById(id);
+            new GetRequest{Value = id.ToString()};
+            var users = await _connectionService.GetById(,null);
 
             return Ok(users);
         }
