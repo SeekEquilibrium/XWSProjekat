@@ -1,0 +1,14 @@
+.row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-right: 5%;
+    margin-left: 5%;
+}
+
+.row_content {
+    font-size: large;
+    width: auto;
+    text-decoration: none;
+    color: rgb(87, 89, 94);
+}

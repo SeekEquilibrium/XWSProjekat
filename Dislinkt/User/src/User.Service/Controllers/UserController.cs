@@ -20,7 +20,8 @@ namespace User.Service.Controllers
         private readonly IUserService _userService;
 
 
-        public UserController(IMapper mapper, IRepository<AppUser> userRepository, ConnectionClient client,  IUserService userService){
+        public UserController(IMapper mapper, IRepository<AppUser> userRepository, ConnectionClient client, IUserService userService)
+        {
             _mapper = mapper;
             _userRepository = userRepository;
             _connectclient = client;
@@ -28,7 +29,8 @@ namespace User.Service.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<IEnumerable<AppUser>>> PostAsync(UserDTO userDto){
+        public async Task<ActionResult<IEnumerable<AppUser>>> PostAsync(UserDTO userDto)
+        {
             var user = _mapper.Map<AppUser>(userDto);
             await _userRepository.CreateAsync(user);
             await _connectclient.PostUserAsync(user.Id);
@@ -36,15 +38,18 @@ namespace User.Service.Controllers
         }
 
         [HttpPut, Authorize]
-        public async Task<ActionResult<AppUser>> PutAsync(UserEditDTO userDto){
+        public async Task<ActionResult<AppUser>> PutAsync(UserEditDTO userDto)
+        {
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             AppUser currentUser = await _userService.GetUserById(new Guid(currentUserId));
             AppUser targetedUser = await _userService.GetUserByUsername(userDto.Username);
-            
+
             // Ako targetedUser != null, postoji user sa tim username
             // Da li taj username pripada useru koji zeli da edituje
-            if(targetedUser != null){
-                if(targetedUser.Id != currentUser.Id){
+            if (targetedUser != null)
+            {
+                if (targetedUser.Id != currentUser.Id)
+                {
                     return BadRequest("User with that USERNAME already exists.");
                 }
 
@@ -56,7 +61,7 @@ namespace User.Service.Controllers
             await _userService.UpdateUser(user);
             return Ok(user);
         }
-    
+
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserDTO>>> GetAsync()
@@ -71,9 +76,9 @@ namespace User.Service.Controllers
         [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<UserDTO>>> GetAsync(string? firstname, string? surname, string? username)
         {
-            if(firstname == null) firstname = string.Empty;
-            if(surname == null) surname = string.Empty;
-            if(username == null) username = string.Empty;
+            if (firstname == null) firstname = string.Empty;
+            if (surname == null) surname = string.Empty;
+            if (username == null) username = string.Empty;
 
             var users = (await _userService.SearchUsers(firstname, surname, username))
                         .Select(user => _mapper.Map<UserDTO>(user));
@@ -81,7 +86,7 @@ namespace User.Service.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserDTO>> GetByIdAsync(Guid id)
+        public async Task<ActionResult<UserInfoDTO>> GetByIdAsync(Guid id)
         {
             var user = await _userService.GetUserById(id);
 
@@ -89,7 +94,7 @@ namespace User.Service.Controllers
             {
                 return NotFound();
             }
-            var responseUser = _mapper.Map<UserDTO>(user);
+            var responseUser = _mapper.Map<UserInfoDTO>(user);
             return responseUser;
         }
     }

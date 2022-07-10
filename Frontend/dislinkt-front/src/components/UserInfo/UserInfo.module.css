@@ -1,0 +1,69 @@
+.page {
+    margin-bottom: 50px;
+}
+.header {
+    margin-top: 30px;
+    height: 300px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profileImage {
+    height: 200px;
+    width: auto;
+    border-radius: 100px;
+}
+
+.radius {
+    border-radius: 20px;
+}
+
+.firstnameSurname {
+    font-size: 25px;
+    margin-bottom: 0px;
+    text-transform: capitalize;
+}
+
+.username {
+    font-size: 15px;
+    margin-bottom: 0px;
+    font-weight: 500;
+}
+
+.email {
+    font: 15px;
+    color: rgb(91, 91, 91);
+}
+
+.description {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    padding-top: 20px;
+    column-gap: 100px;
+}
+
+.interests {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0;
+    width: 0;
+}
+
+.biography {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0;
+    width: 0;
+}
+
+.postContainer {
+    display: flex;
+    flex-direction: column;
+    padding-left: 80px;
+    padding-right: 80px;
+    margin-top: 0px;
+}

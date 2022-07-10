@@ -1,0 +1,26 @@
+.page {
+    display: flex;
+    margin: 50px auto;
+    flex-direction: column;
+    align-items: center;
+    height: auto;
+    width: 50%;
+    background-color: rgb(237, 237, 237);
+    padding: 20px 30px 30px 30px;
+}
+
+.title {
+    font-size: 30px;
+    font-weight: 500;
+}
+
+.rowInputs {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    column-gap: 15px;
+}
+
+.input {
+    width: 100%;
+}
