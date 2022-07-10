@@ -39,7 +39,7 @@ builder.Services.AddMongoRepository<JobOffer>("offers")
 
 builder.Services.AddHttpClient<JobOfferClient>(client =>
             {
-                client.BaseAddress = new Uri("https://localhost:5010");
+                client.BaseAddress = new Uri("https://localhost:7176");
             });  
 
 builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>

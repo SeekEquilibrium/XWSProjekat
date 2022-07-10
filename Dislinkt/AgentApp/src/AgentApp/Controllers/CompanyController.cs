@@ -106,7 +106,8 @@ namespace AgentApp.Controller
             JobOffer offer = _mapper.Map<JobOffer>(jobOfferDTO);
             await _jobOfferService.CreateJobOffer(offer);
 
-            await _jobOfferClient.PostJobOffer(jobOfferDTO);
+            offer.Id = Guid.NewGuid();
+            await _jobOfferClient.PostJobOffer(offer);
 
             return Ok(offer);
          }

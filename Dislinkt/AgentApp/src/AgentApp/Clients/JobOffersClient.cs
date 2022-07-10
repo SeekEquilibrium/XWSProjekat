@@ -1,4 +1,5 @@
 using AgentApp.DTO;
+using AgentApp.Models;
 
 namespace AgentApp.Clients
 {
@@ -11,9 +12,9 @@ namespace AgentApp.Clients
             _httpClient = httpClient;
         }
 
-        public async Task PostJobOffer(JobOfferDTO offer)
+        public async Task PostJobOffer(JobOffer offer)
         {
-            await _httpClient.PostAsJsonAsync<JobOfferDTO>($"/JobOffers", offer);
+            await _httpClient.PostAsJsonAsync<JobOffer>($"/Offer", offer);
         }
     }
 }
