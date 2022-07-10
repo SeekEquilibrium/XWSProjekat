@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import style from "./Registration.module.css";
 import { Form, Button, Alert } from "react-bootstrap";
 import { RegisterUser } from "../../APIs/UserServiceAPI";
+import { useNavigate } from "react-router-dom";
+
 export const Registration = () => {
     const [firstname, setFirstname] = useState("");
     const [surname, setSurname] = useState("");
@@ -15,6 +17,7 @@ export const Registration = () => {
     const [password, setPassword] = useState("");
     const [repeatPassword, setRepeatPassword] = useState("");
     const [isPrivate, setIsPrivate] = useState(true);
+    const navigate = useNavigate();
 
     const onSubmit = (event) => {
         event.preventDefault();
@@ -53,7 +56,11 @@ export const Registration = () => {
             repeatPassword,
             isPrivate,
         };
-        RegisterUser(User);
+        RegisterUser(User)
+            ?.then(navigate("/login"))
+            ?.catch((error) => {
+                alert(error.message);
+            });
     };
 
     return (

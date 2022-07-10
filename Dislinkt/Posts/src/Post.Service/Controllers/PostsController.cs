@@ -4,6 +4,7 @@ using Post.Service.Clients;
 using Post.Service.DTO;
 using Post.Service.Models;
 using Microsoft.AspNetCore.Authorization;
+using AutoMapper;
 
 namespace Post.Service.Controllers
 {
@@ -11,6 +12,8 @@ namespace Post.Service.Controllers
     [Route("posts")]
     public class PostsController : ControllerBase
     {
+        public readonly IMapper _mapper;
+
         private readonly IRepository<UserPost> _postRepository;
 
         private readonly IRepository<PostInteractions> _interactionRepository;
@@ -18,8 +21,9 @@ namespace Post.Service.Controllers
         private readonly UserClient _userClient;
 
         private readonly ConnectionClient _connectionClient;
-        public PostsController(IRepository<UserPost> postRepository, IRepository<PostInteractions> interactionRepository, UserClient userClient, ConnectionClient connectionClient)
+        public PostsController(IMapper mapper, IRepository<UserPost> postRepository, IRepository<PostInteractions> interactionRepository, UserClient userClient, ConnectionClient connectionClient)
         {
+            this._mapper = mapper;
             this._postRepository = postRepository;
             this._interactionRepository = interactionRepository;
             this._userClient = userClient;
@@ -29,12 +33,12 @@ namespace Post.Service.Controllers
         [HttpGet]
         public async Task<ActionResult<PostDTO>> GetAsync(Guid postId)
         {
-            if(postId == Guid.Empty) return BadRequest();
-            
+            if (postId == Guid.Empty) return BadRequest();
+
             var post = await _postRepository.GetAsync(postId);
 
-            if(post == null) return BadRequest();
-             
+            if (post == null) return BadRequest();
+
             UserDTO userDto = await _userClient.GetUserAsync(_userClient.GetUserId().Result);
             PostDTO postDto = new PostDTO(
                 post.Id, post.Text, post.PostDate,
@@ -45,13 +49,15 @@ namespace Post.Service.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<IEnumerable<UserPost>>> PostAsync(UserPost userPost)
+        public async Task<ActionResult<IEnumerable<UserPost>>> PostAsync(CreatePostDTO createPostDTO)
         {
-            if(userPost.Text == null) return BadRequest();
+            if (createPostDTO.Text == null) return BadRequest();
 
-            PostInteractions postInteractions = new PostInteractions(userPost.Id, Enumerable.Empty<Guid>(), Enumerable.Empty<Guid>(), Enumerable.Empty<Comment>());
-
-            await _postRepository.CreateAsync(userPost);
+            var post = _mapper.Map<UserPost>(createPostDTO);
+            post.Id = Guid.NewGuid();
+            post.PostDate = DateTime.Now;
+            PostInteractions postInteractions = new PostInteractions(post.Id, Enumerable.Empty<Guid>(), Enumerable.Empty<Guid>(), Enumerable.Empty<Comment>());
+            await _postRepository.CreateAsync(post);
             await _interactionRepository.CreateAsync(postInteractions);
             return Ok();
         }
@@ -62,7 +68,7 @@ namespace Post.Service.Controllers
             var users = await _connectionClient.GetConnectedAsync(_userClient.GetUserId().Result);
             IEnumerable<UserPost> feed = Enumerable.Empty<UserPost>();
 
-            foreach(ConnectionDTO user in users)
+            foreach (ConnectionDTO user in users)
             {
                 feed = feed.Concat<UserPost>(await _postRepository.GetAllAsync(post => post.UserId.Equals(_userClient.GetUserId().Result)));
             }
@@ -73,7 +79,7 @@ namespace Post.Service.Controllers
         [HttpGet("userPosts")]
         public async Task<ActionResult<IEnumerable<UserPost>>> GetByUserAsync()        //provere pracenje i private user
         {
-        
+
             var posts = await _postRepository.GetAllAsync(post => post.UserId.Equals(_userClient.GetUserId().Result));
 
             return Ok(posts);
@@ -83,7 +89,7 @@ namespace Post.Service.Controllers
         public async Task<ActionResult<IEnumerable<UserPost>>> LikePostAsync(InteractionDTO interactionDTO)
         {
             var postInteraction = await _interactionRepository.GetAsync(interactionDTO.PostId);   //TO DO: dodati provere jel vec like/dislike
-            if(!postInteraction.Likes.Contains(_userClient.GetUserId().Result))
+            if (!postInteraction.Likes.Contains(_userClient.GetUserId().Result))
             {
                 postInteraction.Likes = postInteraction.Likes.Append<Guid>(_userClient.GetUserId().Result);
                 await _interactionRepository.UpdateAsync(postInteraction);
@@ -95,12 +101,12 @@ namespace Post.Service.Controllers
         public async Task<ActionResult<IEnumerable<UserPost>>> DislikePostAsync(InteractionDTO interactionDTO)
         {
             var postInteraction = await _interactionRepository.GetAsync(interactionDTO.PostId);      //TO DO: dodati provere jel vec like/dislike
-            if(!postInteraction.Likes.Contains(_userClient.GetUserId().Result))
+            if (!postInteraction.Likes.Contains(_userClient.GetUserId().Result))
             {
                 postInteraction.Dislikes = postInteraction.Dislikes.Append<Guid>(_userClient.GetUserId().Result);
                 await _interactionRepository.UpdateAsync(postInteraction);
-      
-            }        
+
+            }
             return Ok();
         }
 

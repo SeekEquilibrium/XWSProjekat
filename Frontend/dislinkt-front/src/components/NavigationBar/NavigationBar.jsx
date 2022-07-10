@@ -15,12 +15,14 @@ import { useNavigate } from "react-router-dom";
 import "./NavigationBar.css";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMyInfo } from "../../redux";
+import { Requests } from "../Requests/Requests";
 
 export const NavigationBar = () => {
     const dispatch = useDispatch();
     const myInfo = useSelector((state) => state.myInfo);
 
     const [searchClicked, setSearchClicked] = useState(false);
+    const [requestsClicked, setRequestsClicked] = useState(false);
     const [firstname, setFirstname] = useState("");
     const [surname, setSurname] = useState("");
     const [username, setUsername] = useState("");
@@ -151,8 +153,12 @@ export const NavigationBar = () => {
                                 </Dropdown.Toggle>
 
                                 <Dropdown.Menu>
-                                    <Dropdown.Item href="#/action-1">
-                                        Action
+                                    <Dropdown.Item
+                                        onClick={() => {
+                                            setRequestsClicked(true);
+                                        }}
+                                    >
+                                        Requests
                                     </Dropdown.Item>
                                     <Dropdown.Item
                                         onClick={() => goToMyProfile()}
@@ -196,6 +202,19 @@ export const NavigationBar = () => {
                         username={username}
                         closeModal={closeModal}
                     />
+                </Modal.Body>
+            </Modal>
+            <Modal
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+                show={requestsClicked}
+                onHide={() => setRequestsClicked(false)}
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>Requests</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Requests />
                 </Modal.Body>
             </Modal>
         </>

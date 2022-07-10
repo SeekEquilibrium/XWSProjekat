@@ -5,11 +5,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchUserInfo } from "../../redux";
 import profileImage from "../../assets/images/profile-image.png";
 import { Post } from "../Post/Post";
+import { Button } from "react-bootstrap";
 export const UserInfo = () => {
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isFollowing, setIsFollowing] = useState(false);
     const { id } = useParams();
     const dispatch = useDispatch();
     const userInfo = useSelector((state) => state.userInfo);
     useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!!token) {
+            setIsLoggedIn(true);
+        }
         dispatch(fetchUserInfo(id));
         console.log(userInfo.user);
     }, []);
@@ -22,6 +29,13 @@ export const UserInfo = () => {
                 </p>
                 <p className={style.username}>@{userInfo?.user?.username}</p>
                 <p className={style.email}>{userInfo?.user?.email}</p>
+                {isLoggedIn && !isFollowing ? (
+                    <Button variant="primary">Follow</Button>
+                ) : isLoggedIn && isFollowing ? (
+                    <Button variant="outline-primary">Following</Button>
+                ) : (
+                    <></>
+                )}
             </div>
             <div className={style.description}>
                 <div className={style.interests}>
