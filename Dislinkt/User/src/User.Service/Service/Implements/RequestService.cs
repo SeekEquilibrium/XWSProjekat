@@ -20,8 +20,8 @@ namespace User.Service.Service.Implements
             _userService = userService;
         }
 
-        public async Task CreateRequest(Guid reciever){
-            Guid sender = _userService.GetUserId().Result;
+        public async Task CreateRequest(Guid sender ,Guid reciever){
+            
             Request request = new Request(sender, reciever);
             /*if(GetRequest(sender, reciever) == null)
             {
@@ -35,9 +35,9 @@ namespace User.Service.Service.Implements
             return requests;            
         }
 
-        public async Task Confirm( Guid reciever)
+        public async Task Confirm(Guid sender,  Guid reciever)
         {
-            Guid sender = _userService.GetUserId().Result;
+        
             Request request = await GetRequest(sender, reciever);
             if(request != null){
                 await _connectclient.ConnectAsync(sender, reciever);

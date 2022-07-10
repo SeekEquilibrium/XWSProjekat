@@ -93,7 +93,7 @@ namespace User.Service.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserInfoDTO>> GetByIdAsync(Guid id)
+        public async Task<ActionResult<UserEditDTO>> GetByIdAsync(Guid id)
         {
             var user = await _userService.GetUserById(id);
 
@@ -101,7 +101,7 @@ namespace User.Service.Controllers
             {
                 return NotFound();
             }
-            var responseUser = _mapper.Map<UserInfoDTO>(user);
+            var responseUser = _mapper.Map<UserEditDTO>(user);
             return responseUser;
         }
 

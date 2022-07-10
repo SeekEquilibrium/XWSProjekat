@@ -56,12 +56,12 @@ namespace UsersController
         [HttpGet("{eid}/connect/{did}/")]
         public async Task<IActionResult> ConnectUsers(Guid did, Guid eid)
         {
-            await _client.Cypher.Merge("(d:User), (e:User)")
+            await _client.Cypher.Match("(d:User), (e:User)")
                                 .Where((User d, User e) => d.id == did && e.id == eid)
                                 .Create("(d)-[r:follows]->(e)")
                                 .ExecuteWithoutResultsAsync();
 
-            await _client.Cypher.Merge("(d:User), (e:User)")
+            await _client.Cypher.Match("(d:User), (e:User)")
                                 .Where((User d, User e) => d.id == did && e.id == eid)
                                 .Create("(e)-[r:follows]->(d)")
                                 .ExecuteWithoutResultsAsync();
