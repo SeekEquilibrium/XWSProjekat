@@ -4,41 +4,62 @@ import profileImage from "../../assets/images/profile-image.png";
 import Button from "react-bootstrap/Button";
 import { CreateComment } from "../CreateComment/CreateComment";
 import { Modal } from "react-bootstrap";
+import { useSelector } from "react-redux";
 import { ViewComments } from "../ViewComments/ViewComments";
-export const Post = () => {
+import { LikePost, DislikePost } from "../../APIs/PostServiceAPI";
+export const Post = ({ info }) => {
+    const myInfo = useSelector((state) => state.myInfo);
     const [createCommentClick, setCreateCommentClick] = useState(false);
     const [viewCommentsClick, setViewCommentsClick] = useState(false);
+    console.log(info);
+
+    const likePost = () => {
+        LikePost(info?.postId, myInfo?.user?.id)?.then((response) => {
+            window.location.reload();
+        });
+    };
+
+    const dislikePost = () => {
+        DislikePost(info?.postId, myInfo?.user?.id)?.then((response) => {
+            window.location.reload();
+        });
+    };
+
     return (
         <>
             <div className={style.post}>
                 <div className={style.header}>
                     <img className={style.profileImage} src={profileImage} />
-                    <div className={style.firstnameSurname}>Ivan Ivanovic</div>
-                    <div className={style.username}>@ivanovicivan</div>
+                    <div className={style.firstnameSurname}>
+                        {info?.firstname} {info?.surname}
+                    </div>
+                    <div className={style.username}>@{info.username}</div>
                     <div className={style.separator}>|</div>
-                    <div className={style.date}>23.05.2022</div>
+                    <div className={style.date}>{info.postDate}</div>
                 </div>
-                <div className={style.postContent}>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Doloremque, atque, placeat repellat, sed facere aliquam
-                    maiores rem obcaecati minus autem delectus quasi eaque
-                    dignissimos impedit iure voluptatum quos numquam
-                    praesentium.
-                </div>
+                <div className={style.postContent}>{info.text}</div>
                 <div className={style.likesDislikes}>
-                    <a className={style.numberOfLikesDislikes}>25 Likes</a>
-                    <a className={style.numberOfLikesDislikes}>5 Dislikes</a>
+                    <a className={style.numberOfLikesDislikes}>
+                        {info.interactions.likes} Likes
+                    </a>
+                    <a className={style.numberOfLikesDislikes}>
+                        {info.interactions.dislikes} Dislikes
+                    </a>
                     <a
                         onClick={() => setViewCommentsClick(true)}
                         className={style.numberOfLikesDislikes}
                     >
-                        2 Comments
+                        {info.interactions.comments.length} Comments
                     </a>
                 </div>
                 <hr className={style.bigSeparator}></hr>
                 <div className={style.buttons}>
-                    <Button variant="success">Like</Button>{" "}
-                    <Button variant="danger">Dislike</Button>{" "}
+                    <Button onClick={() => likePost()} variant="success">
+                        Like
+                    </Button>{" "}
+                    <Button onClick={() => dislikePost()} variant="danger">
+                        Dislike
+                    </Button>{" "}
                     <Button
                         onClick={() => {
                             setCreateCommentClick(true);
@@ -60,7 +81,7 @@ export const Post = () => {
                     <Modal.Title>Write a comment...</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <CreateComment />
+                    <CreateComment postId={info.postId} />
                 </Modal.Body>
             </Modal>
             <Modal
@@ -74,7 +95,7 @@ export const Post = () => {
                     <Modal.Title>Comments</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <ViewComments />
+                    <ViewComments info={info?.interactions?.comments} />
                 </Modal.Body>
             </Modal>
         </>

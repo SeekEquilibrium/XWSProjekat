@@ -6,20 +6,31 @@ import { fetchUserInfo } from "../../redux";
 import profileImage from "../../assets/images/profile-image.png";
 import { Post } from "../Post/Post";
 import { Button } from "react-bootstrap";
+import { GetUserPosts } from "../../APIs/PostServiceAPI";
 export const UserInfo = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isFollowing, setIsFollowing] = useState(false);
+    const [posts, setPosts] = useState([]);
     const { id } = useParams();
     const dispatch = useDispatch();
     const userInfo = useSelector((state) => state.userInfo);
+
     useEffect(() => {
         const token = localStorage.getItem("token");
         if (!!token) {
             setIsLoggedIn(true);
         }
         dispatch(fetchUserInfo(id));
+        GetUserPosts(id)?.then((response) => {
+            setPosts(response?.data);
+        });
         console.log(userInfo.user);
     }, []);
+
+    const renderPosts = posts?.map((post) => {
+        return <Post info={post}></Post>;
+    });
+
     return (
         <div className={style.page}>
             <div className={style.header}>
@@ -52,10 +63,7 @@ export const UserInfo = () => {
                 </div>
             </div>
             <hr></hr>
-            <div className={style.postContainer}>
-                <Post />
-                <Post />
-            </div>
+            <div className={style.postContainer}>{renderPosts}</div>
         </div>
     );
 };
