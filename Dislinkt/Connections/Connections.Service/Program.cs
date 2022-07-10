@@ -27,6 +27,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddGrpc();
 
+ServiceSettings serviceSettings = builder.Configuration.GetSection(nameof(ServiceSettings)).Get<ServiceSettings>();
+builder.Services.AddScoped<ConnectionService>();
 
 var client = new BoltGraphClient(new Uri("bolt://localhost:7687"),"neo4j", "root");
             client.ConnectAsync();
