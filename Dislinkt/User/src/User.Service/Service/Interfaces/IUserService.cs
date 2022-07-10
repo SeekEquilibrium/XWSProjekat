@@ -1,4 +1,6 @@
 using User.Service.Models;
+using Google.Protobuf.WellKnownTypes;
+using Grpc.Core;
 
 namespace User.Service.Service.Interfaces
 {

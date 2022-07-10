@@ -4,10 +4,15 @@ using User.Service.Models;
 using User.Service.Service.Interfaces;
 using System.Security.Claims;
 using System.ComponentModel;
+using Google.Protobuf;
+using Grpc.Core;
+using User.Service.protos.User.UserServiceProto;
+
+
 
 namespace User.Service.Service.Implements
 {
-    public class UserService : IUserService
+    public class UserService :UserServiceProto.UserServiceProtoBase,IUserService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IRepository<AppUser> _userRepository;

@@ -8,6 +8,13 @@
 
   <ItemGroup>
     <PackageReference Include="Common" Version="1.0.2" />
+    <PackageReference Include="Google.Protobuf" Version="3.21.2" />
+    <PackageReference Include="Google.Protobuf.Tools" Version="3.21.1" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.47.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.47.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.4" />
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.17.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
@@ -15,5 +22,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="7.0.2" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.17.0" />
   </ItemGroup>
-
+  
+  <ItemGroup>
+    <Protobuf Include="protos\User\User.proto" GrpcServices="Server" Link="protos\User\User.proto"></Protobuf>
+  </ItemGroup>
+  
 </Project>

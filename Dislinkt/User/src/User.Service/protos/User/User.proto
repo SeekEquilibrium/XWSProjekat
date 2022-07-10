@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+option csharp_namespace = "User.Service.protos.User.UserServiceProto";
+
+package UserServiceProto;
+
+service UserServiceProto{
+    rpc getUser(google.protobuf.Empty) returns (UserReply);
+    rpc getUserById(google.protobuf.Empty) returns (UserReply);
+}
+
+message UserReply {
+    int32 userid= 1;
+}
+
+message UserModel {
+    int32 userid = 1;
+    string name = 2;
+    string surname = 3;
+}

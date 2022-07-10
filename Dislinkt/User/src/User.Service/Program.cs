@@ -9,6 +9,7 @@ using User.Service.Models;
 using User.Service.Service.Implements;
 using User.Service.Service.Interfaces;
 using User.Service.Clients;
+using System;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,7 +34,19 @@ builder.Services.AddHttpClient<ConnectionClient>(client =>
                 client.BaseAddress = new Uri("https://localhost:5007");
             });
 
+builder.Host.ConfigureWebHostDefaults(WebHostBuilder =>
+{
+    WebHostBuilder.ConfigureKestrel(options=>
+    {
+        options.ListenLocalhost(5000, o=> 
+            o.Protocols =Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http1AndHttp2);
+        options.ListenLocalhost(5001, o=> 
+            o.Protocols =Microsoft.AspNetCore.Server.Kestrel.Core.HttpProtocols.Http1AndHttp2);
+    });
+});
+
 builder.Services.AddControllers();
+builder.Services.AddGrpc();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => {
@@ -66,7 +79,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -80,7 +92,13 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.MapGrpcService<UserService>();
+                
+            });   
+        
 
-app.MapControllers();
 
 app.Run();
