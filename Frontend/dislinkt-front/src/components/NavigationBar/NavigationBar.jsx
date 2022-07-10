@@ -58,6 +58,10 @@ export const NavigationBar = () => {
         setSearchClicked(true);
     };
 
+    const goToFeed = () => {
+        navigate("/feed");
+    };
+
     const goToMyProfile = () => {
         navigate(`/user/${myInfo?.user?.id}`);
     };
@@ -79,7 +83,7 @@ export const NavigationBar = () => {
         <>
             <Navbar bg="light" variant="primary" expand="lg">
                 <Container>
-                    <Navbar.Brand href="/">Dislinkt</Navbar.Brand>
+                    <Navbar.Brand href="/feed">Dislinkt</Navbar.Brand>
                     <Form className="flex-row-center" onSubmit={onSearch}>
                         <FormControl
                             type="search"
@@ -153,6 +157,13 @@ export const NavigationBar = () => {
                                 </Dropdown.Toggle>
 
                                 <Dropdown.Menu>
+                                    <Dropdown.Item
+                                        onClick={() => {
+                                            goToFeed();
+                                        }}
+                                    >
+                                        Feed
+                                    </Dropdown.Item>
                                     <Dropdown.Item
                                         onClick={() => {
                                             setRequestsClicked(true);

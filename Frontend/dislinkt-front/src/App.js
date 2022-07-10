@@ -15,6 +15,7 @@ import { Registration } from "./components/Registration/Registration";
 import { Login } from "./components/Login/Login";
 import { LandingPage } from "./components/LandingPage/LandingPage";
 import { EditProfile } from "./components/EditProfile/EditProfile";
+import { Feed } from "./components/Feed/Feed";
 function App() {
     const isSignedIn = !!localStorage.getItem("token");
     console.log("isSignedIn", isSignedIn);
@@ -39,6 +40,7 @@ function App() {
                         ) : (
                             <>
                                 <Route path="/edit" element={<EditProfile />} />
+                                <Route path="/feed" element={<Feed />} />
                             </>
                         )}
                         <Route path="*" element={<Navigate to="/" replace />} />
