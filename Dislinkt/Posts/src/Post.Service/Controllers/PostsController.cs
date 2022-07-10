@@ -31,7 +31,7 @@ namespace Post.Service.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<PostDTO>> GetAsync(Guid postId)
+        public async Task<ActionResult<PostDTO>> GetAsync(Guid postId, Guid userId)
         {
             if (postId == Guid.Empty) return BadRequest();
 
@@ -39,7 +39,7 @@ namespace Post.Service.Controllers
 
             if (post == null) return BadRequest();
 
-            UserDTO userDto = await _userClient.GetUserAsync(_userClient.GetUserId().Result);
+            UserDTO userDto = await _userClient.GetUserAsync(userId);
             PostDTO postDto = new PostDTO(
                 post.Id, post.Text, post.PostDate,
                 userDto.Id, userDto.Firstname, userDto.Surname, userDto.Username
@@ -63,35 +63,123 @@ namespace Post.Service.Controllers
         }
 
         [HttpGet("feed")]
-        public async Task<ActionResult<IEnumerable<UserPost>>> GetFeedAsync()      //id iz tokena
+        public async Task<ActionResult<IEnumerable<HugePostDTO>>> GetFeedAsync(Guid userId)      //id iz tokena
         {
-            var users = await _connectionClient.GetConnectedAsync(_userClient.GetUserId().Result);
+            var users = await _connectionClient.GetConnectedAsync(userId);
             IEnumerable<UserPost> feed = Enumerable.Empty<UserPost>();
 
             foreach (ConnectionDTO user in users)
             {
-                feed = feed.Concat<UserPost>(await _postRepository.GetAllAsync(post => post.UserId.Equals(_userClient.GetUserId().Result)));
+                feed = feed.Concat<UserPost>(await _postRepository.GetAllAsync(post => post.UserId.Equals(user.Id)));
             }
+            List<HugePostDTO> hugePostDTOs = new List<HugePostDTO>();
+            foreach (var i in feed)
+            {
+                var interaction = await _interactionRepository.GetAsync(i.Id);
+                HugePostDTO postDTO = new HugePostDTO();
+                postDTO.PostId = i.Id;
+                postDTO.Text = i.Text;
+                postDTO.PostDate = i.PostDate;
+                postDTO.UserId = i.UserId;
 
-            return Ok(feed);
+                UserDTO user = new UserDTO();
+                user = await _userClient.GetUserAsync(i.UserId);
+                postDTO.Firstname = user.Firstname;
+                postDTO.Surname = user.Surname;
+                postDTO.Username = user.Username;
+
+                FrontInteractionsDTO frontDTO = new FrontInteractionsDTO();
+                frontDTO.Likes = interaction.Likes.Count();
+                frontDTO.Dislikes = interaction.Dislikes.Count();
+                frontDTO.Id = interaction.Id;
+                List<UserDetailCommentDTO> listakomentara = new List<UserDetailCommentDTO>();
+
+                foreach (var j in interaction.Comments)
+                {
+                    UserDetailCommentDTO commentDTO = new UserDetailCommentDTO();
+                    commentDTO.UserId = j.UserId;
+                    commentDTO.Date = j.Date;
+                    commentDTO.Text = j.Text;
+
+                    UserDTO user1 = new UserDTO();
+                    user1 = await _userClient.GetUserAsync(j.UserId);
+                    commentDTO.Firstname = user1.Firstname;
+                    commentDTO.Surname = user1.Surname;
+                    commentDTO.Username = user1.Username;
+                    listakomentara.Add(commentDTO);
+                }
+                frontDTO.Comments = listakomentara;
+                postDTO.interactions = frontDTO;
+
+                hugePostDTOs.Add(postDTO);
+
+            }
+            return Ok(hugePostDTOs);
         }
 
         [HttpGet("userPosts")]
-        public async Task<ActionResult<IEnumerable<UserPost>>> GetByUserAsync()        //provere pracenje i private user
+        public async Task<ActionResult<IEnumerable<HugePostDTO>>> GetByUserAsync(Guid userId)        //provere pracenje i private user
         {
+            List<HugePostDTO> hugePostDTOs = new List<HugePostDTO>();
 
-            var posts = await _postRepository.GetAllAsync(post => post.UserId.Equals(_userClient.GetUserId().Result));
+            var posts = await _postRepository.GetAllAsync(post => post.UserId.Equals(userId));
+            foreach (var i in posts)
+            {
+                var interaction = await _interactionRepository.GetAsync(i.Id);
+                HugePostDTO postDTO = new HugePostDTO();
+                postDTO.PostId = i.Id;
+                postDTO.Text = i.Text;
+                postDTO.PostDate = i.PostDate;
+                postDTO.UserId = i.UserId;
 
-            return Ok(posts);
+                UserDTO user = new UserDTO();
+                user = await _userClient.GetUserAsync(i.UserId);
+                postDTO.Firstname = user.Firstname;
+                postDTO.Surname = user.Surname;
+                postDTO.Username = user.Username;
+
+                FrontInteractionsDTO frontDTO = new FrontInteractionsDTO();
+                frontDTO.Likes = interaction.Likes.Count();
+                frontDTO.Dislikes = interaction.Dislikes.Count();
+                frontDTO.Id = interaction.Id;
+                List<UserDetailCommentDTO> listakomentara = new List<UserDetailCommentDTO>();
+
+                foreach (var j in interaction.Comments)
+                {
+                    UserDetailCommentDTO commentDTO = new UserDetailCommentDTO();
+                    commentDTO.UserId = j.UserId;
+                    commentDTO.Date = j.Date;
+                    commentDTO.Text = j.Text;
+
+                    UserDTO user1 = new UserDTO();
+                    user1 = await _userClient.GetUserAsync(j.UserId);
+                    commentDTO.Firstname = user1.Firstname;
+                    commentDTO.Surname = user1.Surname;
+                    commentDTO.Username = user1.Username;
+                    listakomentara.Add(commentDTO);
+                }
+                frontDTO.Comments = listakomentara;
+                postDTO.interactions = frontDTO;
+
+                hugePostDTOs.Add(postDTO);
+
+            }
+
+            return Ok(hugePostDTOs);
         }
 
         [HttpPost("likePost")]
         public async Task<ActionResult<IEnumerable<UserPost>>> LikePostAsync(InteractionDTO interactionDTO)
         {
             var postInteraction = await _interactionRepository.GetAsync(interactionDTO.PostId);   //TO DO: dodati provere jel vec like/dislike
-            if (!postInteraction.Likes.Contains(_userClient.GetUserId().Result))
+            if (!postInteraction.Likes.Contains(interactionDTO.UserId))
             {
-                postInteraction.Likes = postInteraction.Likes.Append<Guid>(_userClient.GetUserId().Result);
+                if (postInteraction.Dislikes.Contains(interactionDTO.UserId))
+                {
+                    postInteraction.Dislikes = postInteraction.Dislikes.Where(x => x != interactionDTO.UserId);
+                }
+
+                postInteraction.Likes = postInteraction.Likes.Append<Guid>(interactionDTO.UserId);
                 await _interactionRepository.UpdateAsync(postInteraction);
             }
             return Ok();
@@ -101,11 +189,15 @@ namespace Post.Service.Controllers
         public async Task<ActionResult<IEnumerable<UserPost>>> DislikePostAsync(InteractionDTO interactionDTO)
         {
             var postInteraction = await _interactionRepository.GetAsync(interactionDTO.PostId);      //TO DO: dodati provere jel vec like/dislike
-            if (!postInteraction.Likes.Contains(_userClient.GetUserId().Result))
+            if (!postInteraction.Dislikes.Contains(interactionDTO.UserId))
             {
-                postInteraction.Dislikes = postInteraction.Dislikes.Append<Guid>(_userClient.GetUserId().Result);
-                await _interactionRepository.UpdateAsync(postInteraction);
+                if (postInteraction.Likes.Contains(interactionDTO.UserId))
+                {
+                    postInteraction.Likes = postInteraction.Likes.Where(x => x != interactionDTO.UserId);
+                }
 
+                postInteraction.Dislikes = postInteraction.Dislikes.Append<Guid>(interactionDTO.UserId);
+                await _interactionRepository.UpdateAsync(postInteraction);
             }
             return Ok();
         }
@@ -114,12 +206,13 @@ namespace Post.Service.Controllers
         public async Task<ActionResult<IEnumerable<UserPost>>> CommentAsync(CommentDTO commentDTO)
         {
             var postInteraction = await _interactionRepository.GetAsync(commentDTO.PostId);
-            Comment comment = new Comment(_userClient.GetUserId().Result, commentDTO.Text, DateTimeOffset.Now);
+            Comment comment = new Comment(commentDTO.UserId, commentDTO.Text, DateTimeOffset.Now);
             postInteraction.Comments = postInteraction.Comments.Append<Comment>(comment);
             await _interactionRepository.UpdateAsync(postInteraction);
 
             return Ok();
         }
+
 
     }
 }
