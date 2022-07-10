@@ -7,13 +7,19 @@ import { SignInUser } from "../../APIs/UserServiceAPI";
 export const Login = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+
     const onSubmit = (event) => {
         event.preventDefault();
         if (!username && !password) {
             console.log("Inputs cannot be empty!");
             return;
         }
-        SignInUser(username, password);
+        SignInUser(username, password)
+            ?.then((response) => {
+                localStorage.setItem("token", response.data);
+                window.location.reload();
+            })
+            .catch((error) => alert(error.message));
     };
     return (
         <div className={style.page}>

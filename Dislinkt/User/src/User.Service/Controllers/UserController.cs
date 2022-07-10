@@ -71,6 +71,13 @@ namespace User.Service.Controllers
 
             return Ok(users);
         }
+        [HttpGet("getId"), Authorize]
+        public async Task<ActionResult<String>> GetIdAsync()
+        {
+            var id = await _userService.GetUserId();
+
+            return Ok(id);
+        }
 
 
         [HttpGet("search")]
@@ -86,7 +93,7 @@ namespace User.Service.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<UserInfoDTO>> GetByIdAsync(Guid id)
+        public async Task<ActionResult<UserEditDTO>> GetByIdAsync(Guid id)
         {
             var user = await _userService.GetUserById(id);
 
@@ -94,8 +101,17 @@ namespace User.Service.Controllers
             {
                 return NotFound();
             }
-            var responseUser = _mapper.Map<UserInfoDTO>(user);
+            var responseUser = _mapper.Map<UserEditDTO>(user);
             return responseUser;
+        }
+
+        [HttpGet("myInfo"), Authorize]
+        public async Task<ActionResult<UserEditDTO>> GetMyInfo()
+        {
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            AppUser currentUser = await _userService.GetUserById(new Guid(currentUserId));
+            UserEditDTO userDTO = _mapper.Map<UserEditDTO>(currentUser);
+            return Ok(userDTO);
         }
     }
 }

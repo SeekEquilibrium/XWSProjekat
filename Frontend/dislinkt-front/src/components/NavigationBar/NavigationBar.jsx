@@ -9,19 +9,39 @@ import {
     Modal,
     Toast,
     ToastContainer,
+    Dropdown,
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import "./NavigationBar.css";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchMyInfo } from "../../redux";
+import { Requests } from "../Requests/Requests";
 
 export const NavigationBar = () => {
+    const dispatch = useDispatch();
+    const myInfo = useSelector((state) => state.myInfo);
+
     const [searchClicked, setSearchClicked] = useState(false);
+    const [requestsClicked, setRequestsClicked] = useState(false);
     const [firstname, setFirstname] = useState("");
     const [surname, setSurname] = useState("");
     const [username, setUsername] = useState("");
     const [showWarning, setShowWarning] = useState(false);
+    const [token, setToken] = useState(null);
     const navigate = useNavigate();
 
     const toggleShowWarning = () => setShowWarning(!showWarning);
+
+    useEffect(() => {
+        setToken(localStorage.getItem("token"));
+    }, []);
+
+    useEffect(() => {
+        console.log("TOKEN", token);
+        if (token != null) {
+            dispatch(fetchMyInfo());
+        }
+    }, [token]);
 
     useEffect(() => {
         setTimeout(function () {
@@ -38,11 +58,32 @@ export const NavigationBar = () => {
         setSearchClicked(true);
     };
 
+    const goToFeed = () => {
+        navigate("/feed");
+    };
+
+    const goToMyProfile = () => {
+        navigate(`/user/${myInfo?.user?.id}`);
+    };
+
+    const goToEdit = () => {
+        navigate("/edit");
+    };
+
+    const logout = () => {
+        localStorage.removeItem("token");
+        window.location.reload(true);
+    };
+
+    const closeModal = () => {
+        setSearchClicked(false);
+    };
+
     return (
         <>
-            <Navbar bg="light" expand="lg">
+            <Navbar bg="light" variant="primary" expand="lg">
                 <Container>
-                    <Navbar.Brand href="#home">Dislinkt</Navbar.Brand>
+                    <Navbar.Brand href="/feed">Dislinkt</Navbar.Brand>
                     <Form className="flex-row-center" onSubmit={onSearch}>
                         <FormControl
                             type="search"
@@ -90,20 +131,70 @@ export const NavigationBar = () => {
                             </Toast>
                         </ToastContainer>
                     </Form>
-                    <div className="navbar-buttons">
-                        <Button
-                            onClick={() => navigate("/login")}
-                            variant="primary"
-                        >
-                            Sign In
-                        </Button>{" "}
-                        <Button
-                            onClick={() => navigate("/registration")}
-                            variant="primary"
-                        >
-                            Sign Up
-                        </Button>{" "}
-                    </div>
+                    {!token ? (
+                        <div className="navbar-buttons">
+                            <Button
+                                onClick={() => navigate("/login")}
+                                variant="primary"
+                            >
+                                Sign In
+                            </Button>{" "}
+                            <Button
+                                onClick={() => navigate("/registration")}
+                                variant="primary"
+                            >
+                                Sign Up
+                            </Button>{" "}
+                        </div>
+                    ) : (
+                        <>
+                            <Dropdown>
+                                <Dropdown.Toggle
+                                    variant="outline-primary"
+                                    id="dropdown-basic"
+                                >
+                                    Options
+                                </Dropdown.Toggle>
+
+                                <Dropdown.Menu>
+                                    <Dropdown.Item
+                                        onClick={() => {
+                                            goToFeed();
+                                        }}
+                                    >
+                                        Feed
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                        onClick={() => {
+                                            setRequestsClicked(true);
+                                        }}
+                                    >
+                                        Requests
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                        onClick={() => goToMyProfile()}
+                                    >
+                                        Go to your profile
+                                    </Dropdown.Item>
+                                    <Dropdown.Item onClick={() => goToEdit()}>
+                                        Edit profile
+                                    </Dropdown.Item>
+                                    <Dropdown.Item
+                                        className="logout"
+                                        onClick={() => logout()}
+                                    >
+                                        Logout
+                                    </Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
+                            {/* <Button
+                                onClick={() => logout()}
+                                variant="outline-dark"
+                            >
+                                Log out
+                            </Button>{" "} */}
+                        </>
+                    )}
                 </Container>
             </Navbar>
             <Modal
@@ -120,7 +211,21 @@ export const NavigationBar = () => {
                         firstname={firstname}
                         surname={surname}
                         username={username}
+                        closeModal={closeModal}
                     />
+                </Modal.Body>
+            </Modal>
+            <Modal
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+                show={requestsClicked}
+                onHide={() => setRequestsClicked(false)}
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>Requests</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Requests />
                 </Modal.Body>
             </Modal>
         </>

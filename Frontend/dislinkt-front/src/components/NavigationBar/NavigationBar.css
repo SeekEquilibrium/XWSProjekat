@@ -10,3 +10,7 @@
 .searchbar {
     width: 50%;
 }
+
+.logout {
+    color: red;
+}

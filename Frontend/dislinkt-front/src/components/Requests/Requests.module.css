@@ -1,0 +1,35 @@
+.rows {
+    display: flex;
+    flex-direction: column;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.requestSender {
+    display: flex;
+    flex-direction: row;
+    column-gap: 10px;
+}
+
+.fullname {
+    font-weight: 500;
+    margin: 0;
+    padding: 0;
+}
+
+.username {
+    font-weight: 300;
+    margin: 0;
+    padding: 0;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: row;
+    column-gap: 5px;
+}

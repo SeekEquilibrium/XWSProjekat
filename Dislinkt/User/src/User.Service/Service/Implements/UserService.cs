@@ -2,15 +2,20 @@ using Common;
 using Microsoft.AspNetCore.Mvc;
 using User.Service.Models;
 using User.Service.Service.Interfaces;
+using System.Security.Claims;
+using System.ComponentModel;
 
 namespace User.Service.Service.Implements
 {
     public class UserService : IUserService
     {
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IRepository<AppUser> _userRepository;
-        public UserService(IRepository<AppUser> userRepository)
+        public UserService(IRepository<AppUser> userRepository,IHttpContextAccessor httpContextAccessor)
         {
             _userRepository = userRepository;
+            _httpContextAccessor = httpContextAccessor;
+
         }
 
         public async Task<IEnumerable<AppUser>> GetAll(){
@@ -42,6 +47,17 @@ namespace User.Service.Service.Implements
                                                         (user.Surname.ToLower().Contains(surname.ToLower()) && surname!=string.Empty) ||
                                                         (user.Username.ToLower().Contains(username.ToLower())&& username!=string.Empty)) && !user.IsPrivate);
             return users;
+        }
+        
+        public async Task<Guid> GetUserId(){
+            var result = string.Empty;
+            var resultGuid = new Guid();
+            if(_httpContextAccessor.HttpContext !=null){
+                result = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                
+                resultGuid = Guid.Parse(result);
+            }
+            return resultGuid;
         }
     }
 }

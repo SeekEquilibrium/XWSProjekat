@@ -2,7 +2,7 @@ class BaseApiClass {
     static requestConfig() {
         return {
             headers: {
-                Authorization: window.localStorage.token,
+                Authorization: "bearer " + window.localStorage.token,
                 pragma: "no-cache",
             },
         };

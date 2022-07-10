@@ -33,7 +33,7 @@ ServiceSettings serviceSettings = builder.Configuration.GetSection(nameof(Servic
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IRequestService, RequestSevice>();
-
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddMongo()
                 .AddMongoRepository<AppUser>("users")
                 .AddAutoMapper();

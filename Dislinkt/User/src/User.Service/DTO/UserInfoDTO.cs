@@ -4,6 +4,7 @@ namespace User.Service.DTO
 {
     public class UserInfoDTO
     {
+        
         public String Firstname { get; set; }
         public String Surname { get; set; }
         public String Email { get; set; }

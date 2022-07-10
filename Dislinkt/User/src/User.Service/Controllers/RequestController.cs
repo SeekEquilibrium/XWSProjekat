@@ -4,6 +4,7 @@ using User.Service.Models;
 using User.Service.DTO;
 using Common;
 using User.Service.Service.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace User.Service.Controllers
 {
@@ -15,16 +16,18 @@ namespace User.Service.Controllers
         public readonly IMapper _mapper;
         private readonly IRepository<Request> _requestRepository;
         private readonly IRequestService _requestService;
+        private readonly IUserService _userService;
 
-        public RequestController(IMapper mapper, IRepository<Request> requestRepository, IRequestService requestService)
+        public RequestController(IMapper mapper, IRepository<Request> requestRepository, IRequestService requestService, IUserService userService)
         {
             _requestService = requestService;
             _mapper = mapper;
             _requestRepository = requestRepository;
+            _userService = userService;
         }
 
         [HttpPost]
-        public async Task<ActionResult<IEnumerable<Request>>> PostAsync(RequestDTO requestDTO)
+        public async Task<ActionResult<IEnumerable<Request>>> PostAsync(Guid sender, Guid reciever)
         {
             /*
             if(_userService.isPrivate(requestDTO.reciever))
@@ -36,22 +39,27 @@ namespace User.Service.Controllers
                 //poslati zahtev connection endpointu da kreira konekciju
             }
             */
-            await _requestService.CreateRequest(requestDTO.Sender, requestDTO.Reciever);
+            await _requestService.CreateRequest(sender, reciever);
             return Ok();
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<IEnumerable<RequestDTO>>> GetAsync(Guid id)
+        public async Task<ActionResult<IEnumerable<AppUser>>> GetAsync(Guid id)
         {
+            List<AppUser> users = new List<AppUser>();
             var requests = await _requestService.GetRequestsForUser(id);
-            return Ok(requests);
+            foreach (var i in requests)
+            {
+                users.Add(await _userService.GetUserById(i.Sender));
+            }
+            return Ok(users);
         }
 
 
         [HttpPost("confirm")]
-        public async Task<ActionResult> ConfirmRequest(RequestDTO requestDTO)
+        public async Task<ActionResult> ConfirmRequest(Guid sender, Guid reciever)
         {
-            await _requestService.Confirm(requestDTO.Sender,requestDTO.Reciever);
+            await _requestService.Confirm(sender, reciever);
             return Ok();
         }
     }

@@ -11,14 +11,18 @@ namespace User.Service.Service.Implements
         private readonly IRepository<Request> _requestRepository;
 
         private readonly ConnectionClient _connectclient;
+        private readonly IUserService _userService;
 
-        public RequestSevice(IRepository<Request> requestRepository, ConnectionClient connectclient)
+        public RequestSevice(IRepository<Request> requestRepository, ConnectionClient connectclient, IUserService userService)
         {
             _requestRepository = requestRepository;
             _connectclient = connectclient;
+            _userService = userService;
         }
 
-        public async Task CreateRequest(Guid sender, Guid reciever){
+        public async Task CreateRequest(Guid sender, Guid reciever)
+        {
+
             Request request = new Request(sender, reciever);
             /*if(GetRequest(sender, reciever) == null)
             {
@@ -27,18 +31,22 @@ namespace User.Service.Service.Implements
             await _requestRepository.CreateAsync(request);
         }
 
-        public async Task<IReadOnlyCollection<Request>> GetRequestsForUser(Guid reciever){
+        public async Task<IReadOnlyCollection<Request>> GetRequestsForUser(Guid reciever)
+        {
             IReadOnlyCollection<Request> requests = await _requestRepository.GetAllAsync(request => request.Reciever.Equals(reciever));
-            return requests;            
+            return requests;
         }
 
         public async Task Confirm(Guid sender, Guid reciever)
         {
+
             Request request = await GetRequest(sender, reciever);
-            if(request != null){
+            if (request != null)
+            {
                 await _connectclient.ConnectAsync(sender, reciever);
+                await _requestRepository.RemoveAsync(request.Id);
             }
-            
+
         }
 
         private async Task<Request> GetRequest(Guid sender, Guid reciever)

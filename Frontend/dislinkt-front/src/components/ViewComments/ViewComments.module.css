@@ -1,0 +1,23 @@
+.header {
+    display: flex;
+    flex-direction: row;
+    column-gap: 10px;
+}
+
+.fullname {
+    font-weight: 500;
+}
+
+.username {
+    font-weight: 300;
+}
+
+.date {
+    font-weight: 300;
+}
+
+.commentText {
+    padding-left: 10px;
+    padding-right: 10px;
+    font-weight: 300;
+}

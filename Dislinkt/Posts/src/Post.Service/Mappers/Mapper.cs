@@ -1,4 +1,6 @@
 using AutoMapper;
+using Post.Service.DTO;
+using Post.Service.Models;
 
 namespace Post.Service.Mappers
 {
@@ -8,6 +10,8 @@ namespace Post.Service.Mappers
         {
             public MappingProfile()
             {
+                CreateMap<UserPost, CreatePostDTO>();
+                CreateMap<CreatePostDTO, UserPost>();
             }
         }
     }

@@ -8,6 +8,13 @@
 
   <ItemGroup>
     <PackageReference Include="Common" Version="1.0.2" />
+    <PackageReference Include="Google.Protobuf" Version="3.21.2" />
+    <PackageReference Include="Google.Protobuf.Tools" Version="3.21.1" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.47.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.47.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.4" />
     <PackageReference Include="Neo4j.Driver" Version="4.4.0" />
     <PackageReference Include="Neo4j.Driver.Extensions" Version="1.0.14" />
@@ -15,5 +22,7 @@
     <PackageReference Include="Neo4jClient" Version="4.1.24" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
-
+  <ItemGroup>
+    <Protobuf Include="protos\protos.proto" GrpcServices="Server" Link="protos\protos.proto"></Protobuf>
+  </ItemGroup>
 </Project>
