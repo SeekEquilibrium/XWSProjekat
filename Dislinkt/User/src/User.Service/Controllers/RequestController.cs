@@ -39,7 +39,7 @@ namespace User.Service.Controllers
                 //poslati zahtev connection endpointu da kreira konekciju
             }
             */
-            await _requestService.CreateRequest(sender , reciever);
+            await _requestService.CreateRequest(sender, reciever);
             return Ok();
         }
 
@@ -48,17 +48,18 @@ namespace User.Service.Controllers
         {
             List<AppUser> users = new List<AppUser>();
             var requests = await _requestService.GetRequestsForUser(id);
-            foreach (var i in requests){
-                users.Add(_userService.GetUserById(i.Reciever).Result);
+            foreach (var i in requests)
+            {
+                users.Add(await _userService.GetUserById(i.Sender));
             }
             return Ok(users);
         }
 
 
         [HttpPost("confirm")]
-        public async Task<ActionResult> ConfirmRequest(Guid sender , Guid reciever )
+        public async Task<ActionResult> ConfirmRequest(Guid sender, Guid reciever)
         {
-            await _requestService.Confirm(sender,reciever);
+            await _requestService.Confirm(sender, reciever);
             return Ok();
         }
     }
