@@ -45,7 +45,7 @@ namespace Offers.Service.Controllers
         }
 
         [HttpGet("{offerId}/applied/{userId}/")]
-        public async Task<IActionResult> ConnectUsers(Guid offerId, Guid userId)
+        public async Task<IActionResult> ApplyForOffer(Guid offerId, Guid userId)
         {
             await _client.Cypher.Match("(d:User), (e:Offer)")
                                 .Where((User d, Offer e) => d.id == userId && e.Id == offerId)
