@@ -16,7 +16,7 @@ export const Registration = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [repeatPassword, setRepeatPassword] = useState("");
-    const [isPrivate, setIsPrivate] = useState(true);
+    const [isPrivate, setIsPrivate] = useState("");
     const navigate = useNavigate();
 
     const onSubmit = (event) => {
@@ -165,7 +165,9 @@ export const Registration = () => {
                     </Form.Label>
                     <Form.Select
                         aria-label="Default select example"
-                        onChange={(e) => setIsPrivate(e.target.value)}
+                        onChange={(e) => {
+                            setIsPrivate(e.target.value);
+                        }}
                     >
                         <option value="true">Yes</option>
                         <option value="false">No</option>

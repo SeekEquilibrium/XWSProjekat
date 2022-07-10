@@ -44,7 +44,7 @@ namespace User.Service.Service.Implements
             if (request != null)
             {
                 await _connectclient.ConnectAsync(sender, reciever);
-
+                await _requestRepository.RemoveAsync(request.Id);
             }
 
         }

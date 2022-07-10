@@ -26,6 +26,11 @@ export const SignInUser = async (username, password) => {
 };
 
 export const EditInfo = async (user) => {
+    if (user.isPrivate === "true") {
+        user.isPrivate = true;
+    } else {
+        user.isPrivate = false;
+    }
     return await axios.put(
         "https://localhost:5001/users",
         {
@@ -39,7 +44,7 @@ export const EditInfo = async (user) => {
             username: user.username,
             interest: user.interest,
             skills: user.skills,
-            isPrivate: user.isPrivate,
+            isPrivate: false,
         },
         BaseApiClass.requestConfig()
     );

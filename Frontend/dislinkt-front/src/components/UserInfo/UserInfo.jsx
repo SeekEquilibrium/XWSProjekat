@@ -7,7 +7,9 @@ import profileImage from "../../assets/images/profile-image.png";
 import { Post } from "../Post/Post";
 import { Button } from "react-bootstrap";
 import { GetUserPosts } from "../../APIs/PostServiceAPI";
+import { SendRequest } from "../../APIs/RequestServiceAPI";
 export const UserInfo = () => {
+    const myInfo = useSelector((state) => state.myInfo);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isFollowing, setIsFollowing] = useState(false);
     const [posts, setPosts] = useState([]);
@@ -27,9 +29,25 @@ export const UserInfo = () => {
         console.log(userInfo.user);
     }, []);
 
+    const showButton = () => {
+        if (!isLoggedIn) {
+            return false;
+        }
+        if (myInfo?.user?.id === id) {
+            return false;
+        }
+        return true;
+    };
+
     const renderPosts = posts?.map((post) => {
         return <Post info={post}></Post>;
     });
+
+    const followRequest = () => {
+        SendRequest(myInfo?.user?.id, id)?.then((response) =>
+            console.log(response)
+        );
+    };
 
     return (
         <div className={style.page}>
@@ -40,9 +58,11 @@ export const UserInfo = () => {
                 </p>
                 <p className={style.username}>@{userInfo?.user?.username}</p>
                 <p className={style.email}>{userInfo?.user?.email}</p>
-                {isLoggedIn && !isFollowing ? (
-                    <Button variant="primary">Follow</Button>
-                ) : isLoggedIn && isFollowing ? (
+                {!isFollowing && showButton() ? (
+                    <Button onClick={() => followRequest()} variant="primary">
+                        Follow
+                    </Button>
+                ) : isFollowing && showButton() ? (
                     <Button variant="outline-primary">Following</Button>
                 ) : (
                     <></>
