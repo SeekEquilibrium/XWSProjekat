@@ -1,13 +1,6 @@
 using Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.Json;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Neo4jClient;
-using Microsoft.EntityFrameworkCore;
 
 
 namespace UsersController
@@ -80,6 +73,18 @@ namespace UsersController
             var relationships = query.ToList();
             return relationships;
         } 
+
+        [HttpGet("/RecommendUsers/{id}")]
+        public async Task<List<User>> Getrecommendations(Guid id)
+        {
+            var query = await _client.Cypher.Match("(u1:User)-[:follows]->(u2:User)<-[:follows]-(u3:User)")
+                                                  .Where((User u1) => u1.id == id)
+                                                  .Return(u3 => u3.As<User>()).ResultsAsync;
+
+            var relationships = query.ToList();
+            return relationships;
+        }
+
 
     }
 }

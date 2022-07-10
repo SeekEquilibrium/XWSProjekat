@@ -41,6 +41,7 @@ namespace User.Service.Service.Implements
             Request request = await GetRequest(sender, reciever);
             if(request != null){
                 await _connectclient.ConnectAsync(sender, reciever);
+                
             }
             
         }
