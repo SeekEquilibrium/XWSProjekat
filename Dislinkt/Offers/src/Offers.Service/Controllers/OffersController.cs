@@ -55,6 +55,26 @@ namespace Offers.Service.Controllers
             return Ok();
         }
 
+        [HttpGet("/RecommendOffers/{id}")]
+        public async Task<List<Offer>> Getrecommendations(Guid id)
+        {
+            var query = await _client.Cypher.Match("(u:User)-[:applied]->(o:Offer)")
+                                                  .Where((User u) => u.id == id)
+                                                  .Return(o => o.As<Offer>()).ResultsAsync;
+            var offers = query.ToList();                                 
+            var offer = query.ToList().First();
+
+
+
+            var query1 = await _client.Cypher.Match("(o:Offer)")
+                                                  .Where((Offer o) => o.Requirements == offer.Requirements)
+                                                  .Return(o => o.As<Offer>()).ResultsAsync;
+
+            var recommend = query1.ToList();
+
+            return recommend;
+        }
+
 
     }
 }
